@@ -1,3 +1,5 @@
+import scrapy
+
 valid_ids = [
     2005, 2006, 333, 2026, 12, 9, 8, 2032, 349, 2, 2050, 239, 68, 103,
     189, 2084, 252, 25, 2117, 2429, 2132, 228, 324, 38, 36, 41, 150,
@@ -14,8 +16,29 @@ valid_ids = [
 class ESPNSpider(scrapy.Spider):
     name = "espn_ratings"
 
+    # def start_requests(self):
+    #     base_url = 'https://www.espn.com/college-football/team/fpi/_/id/'
+    #     for num in valid_ids:
+    #         url = base_url + str(num)
+    #         yield scrapy.Request(url=url, callback=self.parse)
+
     def start_requests(self):
-        pass
+        url = "https://www.espn.com/college-football/team/fpi/_/id/2005"
+        yield scrapy.Request(url=url, callback=self.parse)
+
+    # def parse(self, response):
+    #     filename= 'espn-ratings.txt'
+    #     with open(filename, 'a+') as f:
+    #         f.write("hit")
+    #     self.log('Saved file %s' % filename)
 
     def parse(self, response):
-        pass
+        filename = 'espn-ratings.txt'
+        target_rows = response.css('tr.oddrow td:last-of-type::text').extract()[:2]
+        ranks = map(lambda row: self._get_rank_from_row(row), target_rows)
+        with open(filename, 'a+') as f:
+            f.write(' '.join(ranks))
+
+    def _get_rank_from_row(self, row):
+        split = row.split(' ')
+        return split[1][1:-1]

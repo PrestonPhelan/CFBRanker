@@ -1,5 +1,7 @@
 scraper/composite-cf.html
 scraper/composite-cf.txt
+scraper/espn-ratings.html
+scraper/espn-ratings.txt
 scraper/scraper/__init__.pyc
 scraper/scraper/settings.pyc
 scraper/scraper/spiders/__init__.pyc
