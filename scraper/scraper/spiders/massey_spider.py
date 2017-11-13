@@ -10,7 +10,7 @@ class MasseySpider(scrapy.Spider):
 
     def parse(self, response):
         page = response.url.split("/")[-2]
-        filename = 'composite-%s.txt' % page
+        filename = 'composite-%s.csv' % page
         teams_in_order = self._parse_teams_in_order(response)
 
         if len(teams_in_order) != 130:
@@ -24,8 +24,8 @@ class MasseySpider(scrapy.Spider):
             while idx < 130:
                 team = teams_in_order[idx]
                 metrics = map(lambda number: self._standardize_number_length(number), team_metrics[idx])
-                metric_string = ' '.join(metrics)
-                text = metric_string + " " + str(idx + 1) + " " + team + "\n"
+                metric_string = ','.join(metrics)
+                text = metric_string + "," + str(idx + 1) + "," + team + "\n"
                 f.write(text)
                 idx += 1
         self.log('Saved file %s' % filename)

@@ -8,7 +8,6 @@ MasseyNames = {
  'C Michigan': 'Central Michigan',
  'E Michigan': 'Eastern Michigan',
  'Florida Intl': 'FIU',
- 'Southern Miss': 'Southern Mississippi',
  'MTSU': 'Middle Tennessee',
  'Miami OH': 'Miami (OH)',
  'WKU': 'Western Kentucky',
@@ -23,6 +22,7 @@ MasseyNames = {
 ESPNNames = {
  'Florida Intl Golden Panthers': 'FIU',
  "Hawai'i Rainbow Warriors": "Hawaii",
+ "Southern Mississippi Golden Eagles": "Southern Miss",
  "UT San Antonio Roadrunners": "UTSA",
  "UMass Minutemen": "Massachusetts"
 }

@@ -1,4 +1,4 @@
-from ./team import Team
+from team import Team
 
 def build_teams(sourcefile):
     teams = {}

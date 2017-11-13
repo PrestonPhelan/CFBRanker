@@ -7,3 +7,8 @@ scraper/scraper/settings.pyc
 scraper/scraper/spiders/__init__.pyc
 scraper/scraper/spiders/massey_spider.pyc
 scraper/scraper/spiders/espn_spider.pyc
+constants/__pycache__/
+processing/__pycache__/readers.cpython-36.pyc
+processing/__pycache__/teams.cpython-36.pyc
+scraper/composite-cf.csv
+scraper/espn-ratings.csv
