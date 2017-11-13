@@ -22,6 +22,25 @@ def find_match(name, dictionary):
     else:
         return find_match(search_name, dictionary)
 
+def build_result_string(team):
+    name = team.name
+    power = team.power_mean
+    string_power = str(power)
+    while len(string_power) < 6:
+        string_power = " " + string_power
+
+    performance = round(team.calculate_performance_rating(), 2)
+    string_performance = str(performance)
+    while len(string_performance) < 6:
+        string_performance = " " + string_performance
+
+    combined = round(team.get_combined_rating(), 2)
+    string_combined = str(combined)
+    while len(string_combined) < 6:
+        string_combined = " " + string_combined
+
+    return " ".join([string_power, string_performance, string_combined, name])
+
 teams = build_teams(name_source)
 
 power_file = open(power_source, "r")
@@ -50,3 +69,22 @@ for data_line in performance_data:
         data['strength_of_record'],
         data['game_control']
     )
+
+results = []
+
+for key, val in teams.items():
+    results.append({'team': val, 'name': key, 'rating': val.get_combined_rating()})
+
+rankings = sorted(results, key=lambda team: team['rating'])
+
+result_filename = 'results.txt'
+with open(result_filename, 'w+') as f:
+    rank = 1
+    for team in rankings:
+        result_string = build_result_string(team['team'])
+        string_rank = str(rank)
+        while len(string_rank) < 3:
+            string_rank = " " + string_rank
+        f.write(string_rank + " " + result_string + "\n")
+        rank += 1
+        print(team['team'])

@@ -34,9 +34,7 @@ class Team:
         return rating
 
     def calculate_power_rating(self):
-        print("Calculating power rating")
         return self.power_mean
 
     def calculate_performance_rating(self):
-        print("Calculating performance rating")
         return (self.strength_of_record * 2 + self.game_control) / 3.0

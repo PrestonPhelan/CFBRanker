@@ -12,3 +12,5 @@ processing/__pycache__/readers.cpython-36.pyc
 processing/__pycache__/teams.cpython-36.pyc
 scraper/composite-cf.csv
 scraper/espn-ratings.csv
+processing/__pycache__/team.cpython-36.pyc
+results.txt
