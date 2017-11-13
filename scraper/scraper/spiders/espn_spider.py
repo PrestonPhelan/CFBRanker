@@ -16,28 +16,21 @@ valid_ids = [
 class ESPNSpider(scrapy.Spider):
     name = "espn_ratings"
 
-    # def start_requests(self):
-    #     base_url = 'https://www.espn.com/college-football/team/fpi/_/id/'
-    #     for num in valid_ids:
-    #         url = base_url + str(num)
-    #         yield scrapy.Request(url=url, callback=self.parse)
-
     def start_requests(self):
-        url = "https://www.espn.com/college-football/team/fpi/_/id/2005"
-        yield scrapy.Request(url=url, callback=self.parse)
-
-    # def parse(self, response):
-    #     filename= 'espn-ratings.txt'
-    #     with open(filename, 'a+') as f:
-    #         f.write("hit")
-    #     self.log('Saved file %s' % filename)
+        base_url = 'https://www.espn.com/college-football/team/fpi/_/id/'
+        for num in valid_ids:
+            url = base_url + str(num)
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         filename = 'espn-ratings.txt'
         target_rows = response.css('tr.oddrow td:last-of-type::text').extract()[:2]
         ranks = map(lambda row: self._get_rank_from_row(row), target_rows)
+        team = response.css("h3[class^='txt-ncf-']::text").extract()
         with open(filename, 'a+') as f:
-            f.write(' '.join(ranks))
+            rank_text = ' '.join(ranks)
+            team_name = team[0]
+            f.write(rank_text + ' ' + team_name + '\n')
 
     def _get_rank_from_row(self, row):
         split = row.split(' ')
