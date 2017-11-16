@@ -65,10 +65,13 @@ def get_flair_string(name):
     return result
 
 def set_last_week(last_week_data, teams):
+    result = {}
     for line in last_week_data:
-        rank, name = line.split(',')
-        team = teams[name.strip()]
+        rank, name = line.strip().split(',')
+        result[name] = rank
+        team = teams[name]
         team.last_week = rank
+    return result
 
 def read_lines(source):
     source_file = open(source, "r")
@@ -92,7 +95,7 @@ last_week = read_lines(last_week_source)
 conference_data = read_lines(conferences_source)
 
 conference_flairs = build_conference_flairs(conference_data)
-set_last_week(last_week, teams)
+dropped_out = set_last_week(last_week, teams)
 
 for data_line in power_data:
     data = read_composite_line(data_line)
@@ -140,6 +143,8 @@ with open(reddit_filename, 'w+') as f:
     for team in rankings[:25]:
         text = build_reddit_string(rank, team, conference_flairs)
         f.write(text)
+        if team['name'] in dropped_out:
+            del dropped_out[team['name']]
         rank += 1
     f.write("\n")
     f.write("**Next:**\n")
@@ -151,3 +156,10 @@ with open(reddit_filename, 'w+') as f:
         text += ")\n"
         f.write(text)
         f.write("\n")
+    f.write("**Dropped Out:**\n")
+    f.write("\n")
+    print(dropped_out)
+    for key, val in dropped_out.items():
+        team_name = key
+        flair = get_flair_string(team_name)
+        f.write("(" + val + ") " + flair)
