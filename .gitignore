@@ -14,3 +14,7 @@ scraper/composite-cf.csv
 scraper/espn-ratings.csv
 processing/__pycache__/team.cpython-36.pyc
 results.txt
+processing/__pycache__/team.cpython-36.pyc
+last_week.txt
+reddit-saved.txt
+reddit.txt

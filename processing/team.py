@@ -6,6 +6,8 @@ class Team:
         self.strength_of_record = None
         self.game_control = None
         self.combined_rating = None
+        self.reddit_rating = None
+        self.last_week = "NR"
 
     def __str__(self):
         return ", ".join([self.name, str(self.get_combined_rating())[:5]])
@@ -38,3 +40,11 @@ class Team:
 
     def calculate_performance_rating(self):
         return (self.strength_of_record * 2 + self.game_control) / 3.0
+
+    def get_reddit_rating(self):
+        if self.reddit_rating is None:
+            self.calculate_reddit_rating()
+        return self.reddit_rating
+
+    def calculate_reddit_rating(self):
+        self.reddit_rating = round(100*(130-self.get_combined_rating())/129, 1)

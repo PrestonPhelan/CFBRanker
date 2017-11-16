@@ -6,12 +6,10 @@ sys.path = sys.path[:-12]
 sys.path.append('./constants')
 from name_translations import *
 
-print(type(MasseyNames))
-print(MasseyNames)
-
 power_source = './scraper/composite-cf.csv'
 performance_source = './scraper/espn-ratings.csv'
 name_source = './constants/names.txt'
+last_week_source = './last_week.txt'
 
 def find_match(name, dictionary):
     if name == '':
@@ -39,9 +37,38 @@ def build_result_string(team):
     while len(string_combined) < 6:
         string_combined = " " + string_combined
 
-    return " ".join([string_power, string_performance, string_combined, name])
+    reddit = team.get_reddit_rating()
+    string_reddit = str(reddit)
+    while len(string_reddit) < 4:
+        string_reddit = " " + string_reddit
+
+    return " ".join([string_power, string_performance, string_combined, string_reddit, name])
+
+def build_reddit_string(rank, team):
+    result = ""
+    result += str(rank) + " | "
+    result += str(team['team'].last_week) + " | "
+    result += get_flair_string(team['name'])
+    result += " | ?-? | [](#f/) | "
+    result += str(team['team'].get_reddit_rating())
+    result += " |\n"
+    return result
+
+def get_flair_string(name):
+    result = "[" + name + "](#f/"
+    combo_string = "".join(name.split(" ")).lower()
+    result += combo_string + ") "
+    result += name
+    return result
+
+def set_last_week(last_week_data, teams):
+    for line in last_week_data:
+        rank, name = line.split(',')
+        team = teams[name.strip()]
+        team.last_week = rank
 
 teams = build_teams(name_source)
+print (teams)
 
 power_file = open(power_source, "r")
 power_data = power_file.readlines()
@@ -50,6 +77,12 @@ power_file.close()
 performance_file = open(performance_source, "r")
 performance_data = performance_file.readlines()
 performance_file.close()
+
+last_week_file = open(last_week_source, "r")
+last_week = last_week_file.readlines()
+last_week_file.close()
+
+set_last_week(last_week, teams)
 
 for data_line in power_data:
     data = read_composite_line(data_line)
@@ -88,3 +121,23 @@ with open(result_filename, 'w+') as f:
         f.write(string_rank + " " + result_string + "\n")
         rank += 1
         print(team['team'])
+
+reddit_filename = 'reddit.txt'
+with open(reddit_filename, 'w+') as f:
+    f.write("Rnk | LW | Team | W-L | Conf | Rating \n")
+    f.write("---|---|---|---|---|---| \n")
+    rank = 1
+    for team in rankings[:25]:
+        text = build_reddit_string(rank, team)
+        f.write(text)
+        rank += 1
+    f.write("\n")
+    f.write("**Next:**\n")
+    f.write("\n")
+    for team in rankings[25:30]:
+        text = get_flair_string(team['name'])
+        text += " ("
+        text += str(team['team'].get_reddit_rating())
+        text += ")\n"
+        f.write(text)
+        f.write("\n")
