@@ -10,6 +10,7 @@ power_source = './scraper/composite-cf.csv'
 performance_source = './scraper/espn-ratings.csv'
 name_source = './constants/names.txt'
 last_week_source = './last_week.txt'
+conferences_source = './constants/conferences.txt'
 
 def find_match(name, dictionary):
     if name == '':
@@ -44,12 +45,14 @@ def build_result_string(team):
 
     return " ".join([string_power, string_performance, string_combined, string_reddit, name])
 
-def build_reddit_string(rank, team):
+def build_reddit_string(rank, team, conference_flairs):
     result = ""
     result += str(rank) + " | "
     result += str(team['team'].last_week) + " | "
     result += get_flair_string(team['name'])
-    result += " | ?-? | [](#f/) | "
+    result += " | ?-? | "
+    result += conference_flairs[team['team'].conference]
+    result += " | "
     result += str(team['team'].get_reddit_rating())
     result += " |\n"
     return result
@@ -67,21 +70,28 @@ def set_last_week(last_week_data, teams):
         team = teams[name.strip()]
         team.last_week = rank
 
+def read_lines(source):
+    source_file = open(source, "r")
+    source_data = source_file.readlines()
+    source_file.close()
+    return source_data
+
+def build_conference_flairs(data):
+    result = {}
+    for line in data:
+        abrev, flair = line.strip().split(',')
+        result[abrev] = flair
+    return result
+
 teams = build_teams(name_source)
 print (teams)
 
-power_file = open(power_source, "r")
-power_data = power_file.readlines()
-power_file.close()
+power_data = read_lines(power_source)
+performance_data = read_lines(performance_source)
+last_week = read_lines(last_week_source)
+conference_data = read_lines(conferences_source)
 
-performance_file = open(performance_source, "r")
-performance_data = performance_file.readlines()
-performance_file.close()
-
-last_week_file = open(last_week_source, "r")
-last_week = last_week_file.readlines()
-last_week_file.close()
-
+conference_flairs = build_conference_flairs(conference_data)
 set_last_week(last_week, teams)
 
 for data_line in power_data:
@@ -128,7 +138,7 @@ with open(reddit_filename, 'w+') as f:
     f.write("---|---|---|---|---|---| \n")
     rank = 1
     for team in rankings[:25]:
-        text = build_reddit_string(rank, team)
+        text = build_reddit_string(rank, team, conference_flairs)
         f.write(text)
         rank += 1
     f.write("\n")

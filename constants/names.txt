@@ -1,130 +1,130 @@
-Air Force
-Akron
-Alabama
-UAB
-Appalachian State
-Arizona
-Arizona State
-Arkansas
-Arkansas State
-Army
-Auburn
-Ball State
-Baylor
-Boise State
-Boston College
-Bowling Green
-Buffalo
-BYU
-California
-Fresno State
-UCLA
-UCF
-Central Michigan
-Charlotte
-Cincinnati
-Clemson
-Coastal Carolina
-Colorado
-Colorado State
-Connecticut
-Duke
-Eastern Michigan
-East Carolina
-FIU
-Florida
-Florida Atlantic
-Florida State
-Georgia
-Georgia Southern
-Georgia State
-Georgia Tech
-Hawaii
-Houston
-Idaho
-Illinois
-Indiana
-Iowa
-Iowa State
-Kansas
-Kansas State
-Kent State
-Kentucky
-LSU
-Louisiana Tech
-Louisiana
-Louisiana Monroe
-Louisville
-Marshall
-Maryland
-Massachusetts
-Memphis
-Miami
-Miami (OH)
-Michigan
-Michigan State
-Middle Tennessee
-Minnesota
-Ole Miss
-Mississippi State
-Missouri
-Navy
-Nebraska
-Nevada
-UNLV
-New Mexico
-New Mexico State
-North Carolina
-NC State
-North Texas
-Northern Illinois
-Northwestern
-Notre Dame
-Ohio
-Ohio State
-Oklahoma
-Oklahoma State
-Old Dominion
-Oregon
-Oregon State
-Penn State
-Pittsburgh
-Purdue
-Rice
-Rutgers
-San Diego State
-San Jose State
-South Alabama
-South Carolina
-South Florida
-USC
-SMU
-Southern Miss
-Stanford
-Syracuse
-TCU
-Temple
-Tennessee
-Texas
-Texas A&M
-Texas State
-Texas Tech
-UTEP
-UTSA
-Toledo
-Troy
-Tulane
-Tulsa
-Utah
-Utah State
-Vanderbilt
-Virginia
-Virginia Tech
-Wake Forest
-Washington
-Washington State
-West Virginia
-Western Kentucky
-Western Michigan
-Wisconsin
-Wyoming
+Air Force,MWC
+Akron,MAC
+Alabama,SEC
+UAB,CUSA
+Appalachian State,SBC
+Arizona,P12
+Arizona State,P12
+Arkansas,SEC
+Arkansas State,SBC
+Army,IND
+Auburn,SEC
+Ball State,MAC
+Baylor,B12
+Boise State,MWC
+Boston College,ACC
+Bowling Green,MAC
+Buffalo,MAC
+BYU,IND
+California,P12
+Fresno State,MWC
+UCLA,P12
+UCF,AAC
+Central Michigan,MAC
+Charlotte,CUSA
+Cincinnati,AAC
+Clemson,ACC
+Coastal Carolina,SBC
+Colorado,P12
+Colorado State,MWC
+Connecticut,AAC
+Duke,ACC
+Eastern Michigan,MAC
+East Carolina,AAC
+FIU,CUSA
+Florida,SEC
+Florida Atlantic,CUSA
+Florida State,ACC
+Georgia,SEC
+Georgia Southern,SBC
+Georgia State,SBC
+Georgia Tech,ACC
+Hawaii,MWC
+Houston,AAC
+Idaho,SBC
+Illinois,B10
+Indiana,B10
+Iowa,B10
+Iowa State,B12
+Kansas,B12
+Kansas State,B12
+Kent State,MAC
+Kentucky,SEC
+LSU,SEC
+Louisiana Tech,CUSA
+Louisiana,SBC
+Louisiana Monroe,SBC
+Louisville,ACC
+Marshall,CUSA
+Maryland,B10
+Massachusetts,IND
+Memphis,AAC
+Miami,ACC
+Miami (OH),MAC
+Michigan,B10
+Michigan State,B10
+Middle Tennessee,CUSA
+Minnesota,B10
+Ole Miss,SEC
+Mississippi State,SEC
+Missouri,SEC
+Navy,AAC
+Nebraska,B10
+Nevada,MWC
+UNLV,MWC
+New Mexico,MWC
+New Mexico State,SBC
+North Carolina,ACC
+NC State,ACC
+North Texas,CUSA
+Northern Illinois,MAC
+Northwestern,B10
+Notre Dame,IND
+Ohio,MAC
+Ohio State,B10
+Oklahoma,B12
+Oklahoma State,B12
+Old Dominion,CUSA
+Oregon,P12
+Oregon State,P12
+Penn State,B10
+Pittsburgh,ACC
+Purdue,B10
+Rice,CUSA
+Rutgers,B10
+San Diego State,MWC
+San Jose State,MWC
+South Alabama,SBC
+South Carolina,SEC
+South Florida,AAC
+USC,P12
+SMU,AAC
+Southern Miss,CUSA
+Stanford,P12
+Syracuse,ACC
+TCU,B12
+Temple,AAC
+Tennessee,SEC
+Texas,B12
+Texas A&M,SEC
+Texas State,SBC
+Texas Tech,B12
+UTEP,CUSA
+UTSA,CUSA
+Toledo,MAC
+Troy,SBC
+Tulane,AAC
+Tulsa,AAC
+Utah,P12
+Utah State,MWC
+Vanderbilt,SEC
+Virginia,ACC
+Virginia Tech,ACC
+Wake Forest,ACC
+Washington,P12
+Washington State,P12
+West Virginia,B12
+Western Kentucky,CUSA
+Western Michigan,MAC
+Wisconsin,B10
+Wyoming,MWC

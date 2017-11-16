@@ -6,6 +6,6 @@ def build_teams(sourcefile):
     name_list = source.readlines()
     source.close()
     for line in name_list:
-        name = line.strip()
-        teams[name] = Team(name)
+        name, conference = line.split(',')
+        teams[name] = Team(name, conference.strip())
     return teams
