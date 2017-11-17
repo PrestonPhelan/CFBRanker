@@ -9,6 +9,7 @@ class Team:
         self.reddit_rating = None
         self.last_week = "NR"
         self.conference = conference
+        self.record = None
 
     def __str__(self):
         return ", ".join([self.name, str(self.get_combined_rating())[:5]])

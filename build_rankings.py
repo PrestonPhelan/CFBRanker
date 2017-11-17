@@ -11,6 +11,7 @@ performance_source = './scraper/espn-ratings.csv'
 name_source = './constants/names.txt'
 last_week_source = './last_week.txt'
 conferences_source = './constants/conferences.txt'
+records_source = './scraper/standings.csv'
 
 def find_match(name, dictionary):
     if name == '':
@@ -50,7 +51,9 @@ def build_reddit_string(rank, team, conference_flairs):
     result += str(rank) + " | "
     result += str(team['team'].last_week) + " | "
     result += get_flair_string(team['name'])
-    result += " | ?-? | "
+    result += " | "
+    result += team['team'].record
+    result += " | "
     result += conference_flairs[team['team'].conference]
     result += " | "
     result += str(team['team'].get_reddit_rating())
@@ -93,6 +96,7 @@ power_data = read_lines(power_source)
 performance_data = read_lines(performance_source)
 last_week = read_lines(last_week_source)
 conference_data = read_lines(conferences_source)
+record_data = read_lines(records_source)
 
 conference_flairs = build_conference_flairs(conference_data)
 dropped_out = set_last_week(last_week, teams)
@@ -115,6 +119,13 @@ for data_line in performance_data:
         data['strength_of_record'],
         data['game_control']
     )
+
+for data_line in record_data:
+    raw_name, record = data_line.strip().split(",")
+    name = raw_name
+    if raw_name in NCAANames:
+        name = NCAANames[raw_name]
+    teams[name].record = record
 
 results = []
 

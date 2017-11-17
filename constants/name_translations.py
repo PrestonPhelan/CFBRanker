@@ -26,3 +26,13 @@ ESPNNames = {
  "UT San Antonio Roadrunners": "UTSA",
  "UMass Minutemen": "Massachusetts"
 }
+
+NCAANames = {
+    'Louisiana-Monroe': 'Louisiana Monroe',
+    'Louisiana-Lafayette': 'Louisiana',
+    'Miami (FL)': 'Miami',
+    'Southern Methodist': 'SMU',
+    'Brigham Young': 'BYU',
+    'North Carolina State': 'NC State',
+    'Florida International': 'FIU'
+}

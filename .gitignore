@@ -20,3 +20,5 @@ reddit-saved.txt
 reddit.txt
 scraper/scraper/spiders/standings_spider.pyc
 scraper/standings.csv
+modified:   processing/__pycache__/team.cpython-36.pyc
+check_names.py
