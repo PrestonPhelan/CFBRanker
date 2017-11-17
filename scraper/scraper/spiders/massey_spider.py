@@ -44,6 +44,7 @@ class MasseySpider(scrapy.Spider):
         parse_to_floats = lambda results: map(lambda result: float(result), results)
 
         raw_lines = response.text.split('\n')
+        print(raw_lines)
         team_lines = filter(start_of_lines.match, raw_lines)[10:140]
         split_team_lines = map(split_line, team_lines)
         decimal_results = map(select_decimals, split_team_lines)

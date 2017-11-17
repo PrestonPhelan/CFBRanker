@@ -18,3 +18,5 @@ processing/__pycache__/team.cpython-36.pyc
 last_week.txt
 reddit-saved.txt
 reddit.txt
+scraper/scraper/spiders/standings_spider.pyc
+scraper/standings.csv
