@@ -104,15 +104,15 @@ dropped_out = set_last_week(last_week, teams)
 for data_line in power_data:
     data = read_composite_line(data_line)
     team = process_massey_name(data['name'])
-    if team in MasseyNames[0]:
-        team = MasseyNames[0][team]
+    if team in MASSEY_NAMES[0]:
+        team = MASSEY_NAMES[0][team]
     teams[team].set_power_mean(data['mean'])
 
 for data_line in performance_data:
     data = read_performance_line(data_line)
     raw_name = data['name']
-    if raw_name in PerformanceNames:
-        name = PerformanceNames[raw_name]
+    if raw_name in PERFORMANCE_NAMES:
+        name = PERFORMANCE_NAMES[raw_name]
     else:
         name = find_match(raw_name, teams)
     teams[name].set_performance_metrics(
@@ -123,8 +123,8 @@ for data_line in performance_data:
 for data_line in record_data:
     raw_name, record = data_line.strip().split(",")
     name = raw_name
-    if raw_name in NCAANames:
-        name = NCAANames[raw_name]
+    if raw_name in NCAA_NAMES:
+        name = NCAA_NAMES[raw_name]
     teams[name].record = record
 
 results = []

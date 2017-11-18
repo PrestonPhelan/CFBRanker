@@ -1,5 +1,5 @@
 # With Massey, Use Pattern to turn St at end into State
-MasseyNames = {
+MASSEY_NAMES = {
  'Miami FL': 'Miami',
  'FL Atlantic': 'Florida Atlantic',
  'N Illinois': 'Northern Illinois',
@@ -19,7 +19,7 @@ MasseyNames = {
  'UT San Antonio': 'UTSA'
 },
 
-PerformanceNames = {
+PERFORMANCE_NAMES = {
  'Florida Intl Golden Panthers': 'FIU',
  "Hawai'i Rainbow Warriors": "Hawaii",
  "Southern Mississippi Golden Eagles": "Southern Miss",
@@ -27,7 +27,7 @@ PerformanceNames = {
  "UMass Minutemen": "Massachusetts"
 }
 
-NCAANames = {
+NCAA_NAMES = {
     'Louisiana-Monroe': 'Louisiana Monroe',
     'Louisiana-Lafayette': 'Louisiana',
     'Miami (FL)': 'Miami',
