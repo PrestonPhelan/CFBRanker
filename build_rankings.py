@@ -7,7 +7,7 @@ sys.path.append('./constants')
 from name_translations import *
 
 power_source = './scraper/composite-cf.csv'
-performance_source = './scraper/espn-ratings.csv'
+performance_source = './scraper/performance-ratings.csv'
 name_source = './constants/names.txt'
 last_week_source = './last_week.txt'
 conferences_source = './constants/conferences.txt'
@@ -111,8 +111,8 @@ for data_line in power_data:
 for data_line in performance_data:
     data = read_performance_line(data_line)
     raw_name = data['name']
-    if raw_name in ESPNNames:
-        name = ESPNNames[raw_name]
+    if raw_name in PerformanceNames:
+        name = PerformanceNames[raw_name]
     else:
         name = find_match(raw_name, teams)
     teams[name].set_performance_metrics(

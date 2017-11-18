@@ -13,8 +13,8 @@ valid_ids = [
     154, 264, 265, 277, 98, 2711, 275, 2751
 ]
 
-class ESPNSpider(scrapy.Spider):
-    name = "espn_ratings"
+class PerformanceSpider(scrapy.Spider):
+    name = "performance_ratings"
 
     def start_requests(self):
         base_url = 'https://www.espn.com/college-football/team/fpi/_/id/'
@@ -23,7 +23,7 @@ class ESPNSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        filename = 'espn-ratings.csv'
+        filename = 'performance-ratings.csv'
         target_rows = response.css('tr.oddrow td:last-of-type::text').extract()[:2]
         ranks = map(lambda row: self._get_rank_from_row(row), target_rows)
         team = response.css("h3[class^='txt-ncf-']::text").extract()

@@ -19,7 +19,7 @@ MasseyNames = {
  'UT San Antonio': 'UTSA'
 },
 
-ESPNNames = {
+PerformanceNames = {
  'Florida Intl Golden Panthers': 'FIU',
  "Hawai'i Rainbow Warriors": "Hawaii",
  "Southern Mississippi Golden Eagles": "Southern Miss",
