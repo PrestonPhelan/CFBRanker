@@ -25,3 +25,4 @@ check_names.py
 scraper/performance-ratings-13.csv
 scraper/performance-ratings-2017-11-18.csv
 settings.pyc
+output/

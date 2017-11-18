@@ -5,17 +5,17 @@ import os, sys
 local_path = os.path.dirname(__file__)
 root_path = '/'.join(local_path.split('/')[:-3])
 sys.path.append(root_path)
-import settings
+from settings import CURRENT_WEEK
 
 # Spider settings
 wait_between_calls = True
 seconds_between_calls = 0.5
 
-id_source = "../constants/performance_ids.txt"
+id_source = "%s/constants/performance_ids.txt" % root_path
 
 class PerformanceSpider(scrapy.Spider):
     name = "performance_ratings"
-    write_file = 'performance-ratings-week%s.csv' % settings.CURRENT_WEEK
+    write_file = '%s/output/performance-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
 
     def start_requests(self):
         base_url = 'https://www.espn.com/college-football/team/fpi/_/id/'
