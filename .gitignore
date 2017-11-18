@@ -22,3 +22,6 @@ scraper/scraper/spiders/standings_spider.pyc
 scraper/standings.csv
 modified:   processing/__pycache__/team.cpython-36.pyc
 check_names.py
+scraper/performance-ratings-13.csv
+scraper/performance-ratings-2017-11-18.csv
+settings.pyc
