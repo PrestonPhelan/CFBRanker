@@ -8,12 +8,12 @@ from settings import CURRENT_WEEK
 # TODO Fix Input Files For Generated CSVs, Automate LastWeek
 root_path = os.path.dirname(os.path.abspath(__file__))
 sources = {}
-sources['power'] = '%s/scraper/composite-cf.csv' % root_path
-sources['performance'] = '%s/scraper/performance-ratings.csv' % root_path
+sources['power'] = '%s/output/power-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
+sources['performance'] = '%s/output/performance-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
 sources['names'] = '%s/constants/names.txt' % root_path
-sources['last_week'] = '%s/last_week.txt' % root_path
+sources['last_week'] = '%s/output/results-week%s.csv' % (root_path, CURRENT_WEEK - 1)
 sources['conferences'] = '%s/constants/conferences.txt' % root_path
-sources['records'] = '%s/scraper/standings.csv' % root_path
+sources['records'] = '%s/output/standings-week%s.csv' % (root_path, CURRENT_WEEK)
 
 data = {}
 for key, sourcefile in sources.items():
@@ -52,13 +52,13 @@ for data_line in data['records']:
 
 rankings = sorted(list(teams.values()), key=lambda team: team.get_combined_rating())
 
-result_filename = '%s/output/results-week%s.csv' % (root_path, CURRENT_WEEK - 1)
+result_filename = '%s/output/test-results-week%s.csv' % (root_path, CURRENT_WEEK)
 with open(result_filename, 'w+') as f:
     for idx, team in enumerate(rankings):
         result_string = build_result_string(team, idx)
         f.write("%s\n" % result_string)
 
-reddit_filename = '%s/output/reddit-week%s.txt' % (root_path, CURRENT_WEEK - 1)
+reddit_filename = '%s/output/test-reddit-week%s.txt' % (root_path, CURRENT_WEEK)
 with open(reddit_filename, 'w+') as f:
     f.write(build_reddit_header())
     f.write(build_reddit_barrier())
@@ -67,20 +67,16 @@ with open(reddit_filename, 'w+') as f:
         f.write(text)
         if team.name in dropped_out:
             del dropped_out[team.name]
-    f.write("\n")
-    f.write("**Next:**\n")
-    f.write("\n")
+    f.write("\n**Next:**\n\n")
     for team in rankings[25:30]:
-        text = team.get_flair_string(REDDIT_NAMES)
-        text += " ("
-        text += str(team.get_reddit_rating())
-        text += ")\n"
+        flair_string = team.get_flair_string(REDDIT_NAMES)
+        rating = team.get_reddit_rating()
+        text = "%s (%s)\n\n" % (flair_string, rating)
         f.write(text)
-        f.write("\n")
-    f.write("**Dropped Out:**\n")
-    f.write("\n")
-    print(dropped_out)
-    for key, val in dropped_out.items():
-        team_name = key
+    f.write("**Dropped Out:**\n\n")
+    for team_name, lw_rank in dropped_out.items():
         flair = teams[team_name].get_flair_string(REDDIT_NAMES)
-        f.write("(" + val + ") " + flair)
+        text = "(%s) %s \n\n" % (lw_rank, flair)
+        f.write(text)
+
+print("DONE")
