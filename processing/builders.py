@@ -5,12 +5,14 @@ def build_conference_flairs(data):
         result[abrev] = flair
     return result
 
-def build_result_string(team):
+def build_result_string(team, idx):
+    rank = idx + 1
     performance = round(team.calculate_performance_rating(), 2)
     combined = round(team.get_combined_rating(), 2)
     reddit = team.get_reddit_rating()
 
     return ",".join(map(lambda el: str(el), [
+        rank,
         team.power_mean,
         performance,
         combined,

@@ -70,9 +70,8 @@ rankings = sorted(list(teams.values()), key=lambda team: team.get_combined_ratin
 result_filename = '%s/output/results-week%s.csv' % (root_path, CURRENT_WEEK - 1)
 with open(result_filename, 'w+') as f:
     for idx, team in enumerate(rankings):
-        result_string = build_result_string(team)
-        rank = idx + 1
-        f.write("%s,%s\n" % (rank, result_string))
+        result_string = build_result_string(team, idx)
+        f.write("%s\n" % result_string)
 
 reddit_filename = 'reddit.txt'
 with open(reddit_filename, 'w+') as f:
