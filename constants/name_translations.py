@@ -36,3 +36,13 @@ NCAA_NAMES = {
     'North Carolina State': 'NC State',
     'Florida International': 'FIU'
 }
+
+def find_match(name, dictionary):
+    """For use with PERFORMANCE_NAMES."""
+    if name == '':
+        raise "Didn't find name"
+    search_name = (' ').join(name.split(' ')[:-1])
+    if search_name in dictionary:
+        return search_name
+    else:
+        return find_match(search_name, dictionary)

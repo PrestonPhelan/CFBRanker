@@ -20,23 +20,9 @@ for key, sourcefile in sources.items():
     with open(sourcefile) as f:
         data[key] = list(f)
 
-for key, _ in data.items():
-    print(key)
-
-print(data['performance'])
-
 teams = Team.build_teams_from_file(sources['names'])
 conference_flairs = build_conference_flairs(data['conferences'])
 dropped_out = Team.set_last_week(data['last_week'], teams)
-
-def find_match(name, dictionary):
-    if name == '':
-        raise "Didn't find name"
-    search_name = (' ').join(name.split(' ')[:-1])
-    if search_name in dictionary:
-        return search_name
-    else:
-        return find_match(search_name, dictionary)
 
 def build_result_string(team):
     name = team.name
