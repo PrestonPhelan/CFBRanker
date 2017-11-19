@@ -1,4 +1,4 @@
-def read_composite_line(line):
+def read_power_line(line):
     elements = line.strip().split(',')
     mean, median, standard_deviation, rank, name = elements
     return { 'mean': float(mean), 'name': name }

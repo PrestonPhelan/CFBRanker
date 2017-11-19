@@ -17,7 +17,7 @@ POWER_NAMES = {
  'Coastal Car': 'Coastal Carolina',
  'Ga Southern': 'Georgia Southern',
  'UT San Antonio': 'UTSA'
-},
+}
 
 PERFORMANCE_NAMES = {
  'Florida Intl Golden Panthers': 'FIU',

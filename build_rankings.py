@@ -24,29 +24,6 @@ teams = Team.build_teams_from_file(sources['names'])
 conference_flairs = build_conference_flairs(data['conferences'])
 dropped_out = Team.set_last_week(data['last_week'], teams)
 
-def build_result_string(team):
-    name = team.name
-    power = team.power_mean
-    string_power = str(power)
-    # while len(string_power) < 6:
-    #     string_power = " " + string_power
-
-    performance = round(team.calculate_performance_rating(), 2)
-    string_performance = str(performance)
-    # while len(string_performance) < 6:
-    #     string_performance = " " + string_performance
-
-    combined = round(team.get_combined_rating(), 2)
-    string_combined = str(combined)
-    # while len(string_combined) < 6:
-    #     string_combined = " " + string_combined
-
-    reddit = team.get_reddit_rating()
-    string_reddit = str(reddit)
-    # while len(string_reddit) < 4:
-    #     string_reddit = " " + string_reddit
-
-    return ",".join([string_power, string_performance, string_combined, string_reddit, name])
 
 def build_reddit_string(rank, team, conference_flairs):
     result = ""
@@ -63,10 +40,10 @@ def build_reddit_string(rank, team, conference_flairs):
     return result
 
 for data_line in data['power']:
-    raw_data = read_composite_line(data_line)
+    raw_data = read_power_line(data_line)
     team = process_power_name(raw_data['name'])
-    if team in POWER_NAMES[0]:
-        team = POWER_NAMES[0][team]
+    if team in POWER_NAMES:
+        team = POWER_NAMES[team]
     teams[team].set_power_mean(raw_data['mean'])
 
 for data_line in data['performance']:
@@ -88,19 +65,14 @@ for data_line in data['records']:
         name = NCAA_NAMES[raw_name]
     teams[name].record = record
 
-
 rankings = sorted(list(teams.values()), key=lambda team: team.get_combined_rating())
 
 result_filename = '%s/output/results-week%s.csv' % (root_path, CURRENT_WEEK - 1)
 with open(result_filename, 'w+') as f:
-    rank = 1
-    for team in rankings:
+    for idx, team in enumerate(rankings):
         result_string = build_result_string(team)
-        string_rank = str(rank)
-        # while len(string_rank) < 3:
-        #     string_rank = " " + string_rank
-        f.write(string_rank + "," + result_string + "\n")
-        rank += 1
+        rank = idx + 1
+        f.write("%s,%s\n" % (rank, result_string))
 
 reddit_filename = 'reddit.txt'
 with open(reddit_filename, 'w+') as f:
