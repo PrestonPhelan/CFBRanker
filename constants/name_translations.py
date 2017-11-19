@@ -1,5 +1,5 @@
-# With Massey, Use Pattern to turn St at end into State
-MASSEY_NAMES = {
+# With Power, Use Pattern to turn St at end into State
+POWER_NAMES = {
  'Miami FL': 'Miami',
  'FL Atlantic': 'Florida Atlantic',
  'N Illinois': 'Northern Illinois',

@@ -12,7 +12,7 @@ def read_performance_line(line):
         'name': name
         }
 
-def process_massey_name(name):
+def process_power_name(name):
     result = name
     if name.endswith("St"):
         result = name + "ate"

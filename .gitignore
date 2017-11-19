@@ -5,7 +5,7 @@ scraper/performance-ratings.txt
 scraper/scraper/__init__.pyc
 scraper/scraper/settings.pyc
 scraper/scraper/spiders/__init__.pyc
-scraper/scraper/spiders/massey_spider.pyc
+scraper/scraper/spiders/power_spider.pyc
 scraper/scraper/spiders/performance_spider.pyc
 constants/__pycache__/
 processing/__pycache__/readers.cpython-36.pyc

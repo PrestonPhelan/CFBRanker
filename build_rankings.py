@@ -103,9 +103,9 @@ dropped_out = set_last_week(last_week, teams)
 
 for data_line in power_data:
     data = read_composite_line(data_line)
-    team = process_massey_name(data['name'])
-    if team in MASSEY_NAMES[0]:
-        team = MASSEY_NAMES[0][team]
+    team = process_power_name(data['name'])
+    if team in POWER_NAMES[0]:
+        team = POWER_NAMES[0][team]
     teams[team].set_power_mean(data['mean'])
 
 for data_line in performance_data:

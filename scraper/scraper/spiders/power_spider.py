@@ -1,8 +1,8 @@
 import scrapy
 import re
 
-class MasseySpider(scrapy.Spider):
-    name = "massey_composite"
+class PowerSpider(scrapy.Spider):
+    name = "power_ratings"
 
     def start_requests(self):
         url = 'https://www.masseyratings.com/cf/compare.htm'
