@@ -1,5 +1,10 @@
 import scrapy
 import re
+import os, sys
+local_path = os.path.dirname(__file__)
+root_path = '/'.join(local_path.split('/')[:-3])
+sys.path.append(root_path)
+from settings import CURRENT_WEEK
 
 class PowerSpider(scrapy.Spider):
     name = "power_ratings"
@@ -9,29 +14,21 @@ class PowerSpider(scrapy.Spider):
         yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        page = response.url.split("/")[-2]
-        filename = 'composite-%s.csv' % page
-        teams_in_order = self._parse_teams_in_order(response)
+        write_file = '%s/output/power-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
 
+        teams_in_order = response.css("a[href^='../team.php']::text").extract()[0:-11]
         if len(teams_in_order) != 130:
             raise "Wrong number of team names fetched."
         team_metrics = self._parse_team_metrics(response)
         if len(team_metrics) != 130:
             raise "Wrong number of metrics fetched."
 
-        with open(filename, 'wb') as f:
-            idx = 0
-            while idx < 130:
-                team = teams_in_order[idx]
-                metrics = map(lambda number: self._standardize_number_length(number), team_metrics[idx])
-                metric_string = ','.join(metrics)
-                text = metric_string + "," + str(idx + 1) + "," + team + "\n"
+        with open(write_file, 'wb') as f:
+            for idx, team in enumerate(teams_in_order):
+                metric_string = ','.join(team_metrics[idx])
+                text = "%s,%s,%s\n" % (metric_string, str(idx + 1), team)
                 f.write(text)
-                idx += 1
-        self.log('Saved file %s' % filename)
-
-    def _parse_teams_in_order(self, response):
-        return response.css("a[href^='../team.php']::text").extract()[0:-11]
+        self.log('Saved file %s' % write_file)
 
     def _parse_team_metrics(self, response):
         # REGEX VARIABLES
@@ -44,18 +41,7 @@ class PowerSpider(scrapy.Spider):
         parse_to_floats = lambda results: map(lambda result: float(result), results)
 
         raw_lines = response.text.split('\n')
-        print(raw_lines)
         team_lines = filter(start_of_lines.match, raw_lines)[10:140]
         split_team_lines = map(split_line, team_lines)
         decimal_results = map(select_decimals, split_team_lines)
         return decimal_results
-
-    def _standardize_number_length(self, number):
-        split_number = number.split('.')
-        while len(split_number[0]) < 3:
-            split_number[0] = ' ' + split_number[0]
-
-        while len(split_number[1]) < 2:
-            split_number[1] = split_number[1] + '0'
-
-        return '.'.join(split_number)

@@ -1,6 +1,5 @@
 import scrapy
 import time
-import datetime
 import os, sys
 local_path = os.path.dirname(__file__)
 root_path = '/'.join(local_path.split('/')[:-3])
