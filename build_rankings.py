@@ -5,7 +5,6 @@ from processing.builders import *
 from constants.name_translations import *
 from settings import CURRENT_WEEK
 
-# TODO Fix Input Files For Generated CSVs, Automate LastWeek
 root_path = os.path.dirname(os.path.abspath(__file__))
 sources = {}
 sources['power'] = '%s/output/power-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
@@ -52,13 +51,13 @@ for data_line in data['records']:
 
 rankings = sorted(list(teams.values()), key=lambda team: team.get_combined_rating())
 
-result_filename = '%s/output/test-results-week%s.csv' % (root_path, CURRENT_WEEK)
+result_filename = '%s/output/results-week%s.csv' % (root_path, CURRENT_WEEK)
 with open(result_filename, 'w+') as f:
     for idx, team in enumerate(rankings):
         result_string = build_result_string(team, idx)
         f.write("%s\n" % result_string)
 
-reddit_filename = '%s/output/test-reddit-week%s.txt' % (root_path, CURRENT_WEEK)
+reddit_filename = '%s/output/reddit-week%s.txt' % (root_path, CURRENT_WEEK)
 with open(reddit_filename, 'w+') as f:
     f.write(build_reddit_header())
     f.write(build_reddit_barrier())
