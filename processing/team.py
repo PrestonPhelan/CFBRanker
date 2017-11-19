@@ -1,5 +1,29 @@
 class Team:
 
+    @classmethod
+    def build_teams_from_file(cls, sourcefile):
+        teams = {}
+        name_list = None
+        with open(sourcefile) as f:
+            name_list = list(f)
+        for line in name_list:
+            name, conference = line.strip().split(',')
+            teams[name] = Team(name, conference)
+        return teams
+
+    @classmethod
+    def set_last_week(cls, last_week_data, teams):
+        top_25 = last_week_data[:25]
+        result = {}
+        for line in top_25:
+            columns = line.strip().split(',')
+            rank = columns[0]
+            team_name = columns[-1]
+            result[team_name] = rank
+            team = teams[team_name]
+            team.last_week = rank
+        return result
+
     def __init__(self, name, conference):
         self.name = name
         self.power_mean = None

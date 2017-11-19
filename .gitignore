@@ -1,3 +1,4 @@
+*.pyc
 scraper/composite-cf.html
 scraper/composite-cf.txt
 scraper/performance-ratings.html
@@ -26,3 +27,4 @@ scraper/performance-ratings-13.csv
 scraper/performance-ratings-2017-11-18.csv
 settings.pyc
 output/
+__pycache__/
