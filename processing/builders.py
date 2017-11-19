@@ -26,3 +26,30 @@ def build_reddit_header():
 
 def build_reddit_barrier():
     return "|".join(map(lambda _: "---", REDDIT_COLUMNS)) + "\n"
+
+def build_reddit_string(idx, team, conference_flairs, flair_dict):
+    rank = idx + 1
+    flair_string = team.get_flair_string(flair_dict)
+    conf_flair = conference_flairs[team.conference]
+    rating = team.get_reddit_rating()
+
+    result = "%(rnk)s | %(lw)s | %(name)s | %(record)s | %(conference)s | %(rating)s |\n" % {
+        'rnk': rank,
+        'lw': team.last_week,
+        'name': flair_string,
+        'record': team.record,
+        'conference': conf_flair,
+        'rating': rating
+    }
+    # result = ""
+    # result += str(rank) + " | "
+    # result += str(team.last_week) + " | "
+    # result += team.get_flair_string(flair_dict)
+    # result += " | "
+    # result += team.record
+    # result += " | "
+    # result += conference_flairs[team.conference]
+    # result += " | "
+    # result += str(team.get_reddit_rating())
+    # result += " |\n"
+    return result
