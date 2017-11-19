@@ -73,17 +73,17 @@ with open(result_filename, 'w+') as f:
         result_string = build_result_string(team, idx)
         f.write("%s\n" % result_string)
 
-reddit_filename = 'reddit.txt'
+reddit_filename = '%s/output/reddit-week%s.txt' % (root_path, CURRENT_WEEK - 1)
 with open(reddit_filename, 'w+') as f:
-    f.write("Rnk | LW | Team | W-L | Conf | Rating \n")
-    f.write("---|---|---|---|---|---| \n")
-    rank = 1
-    for team in rankings[:25]:
-        text = build_reddit_string(rank, team, conference_flairs)
+    f.write(build_reddit_header())
+    f.write(build_reddit_barrier())
+    # f.write("Rnk | LW | Team | W-L | Conf | Rating \n")
+    # f.write("---|---|---|---|---|---| \n")
+    for idx, team in enumerate(rankings[:25]):
+        text = build_reddit_string(idx + 1, team, conference_flairs)
         f.write(text)
         if team.name in dropped_out:
             del dropped_out[team.name]
-        rank += 1
     f.write("\n")
     f.write("**Next:**\n")
     f.write("\n")

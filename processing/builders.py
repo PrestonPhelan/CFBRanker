@@ -18,3 +18,11 @@ def build_result_string(team, idx):
         combined,
         reddit,
         team.name]))
+
+REDDIT_COLUMNS = ["Rnk", "LW", "Team", "W-L", "Conf", "Rating"]
+
+def build_reddit_header():
+    return " | ".join(REDDIT_COLUMNS) + "\n"
+
+def build_reddit_barrier():
+    return "|".join(map(lambda _: "---", REDDIT_COLUMNS)) + "\n"
