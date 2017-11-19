@@ -51,31 +51,16 @@ def build_result_string(team):
 def build_reddit_string(rank, team, conference_flairs):
     result = ""
     result += str(rank) + " | "
-    result += str(team['team'].last_week) + " | "
-    result += get_flair_string(team['name'])
+    result += str(team.last_week) + " | "
+    result += team.get_flair_string(REDDIT_NAMES)
     result += " | "
-    result += team['team'].record
+    result += team.record
     result += " | "
-    result += conference_flairs[team['team'].conference]
+    result += conference_flairs[team.conference]
     result += " | "
-    result += str(team['team'].get_reddit_rating())
+    result += str(team.get_reddit_rating())
     result += " |\n"
     return result
-
-def get_flair_string(name):
-    result = "[" + name + "](#f/"
-    combo_string = "".join(name.split(" ")).lower()
-    result += combo_string + ") "
-    result += name
-    return result
-
-def read_lines(source):
-    source_file = open(source, "r")
-    source_data = source_file.readlines()
-    source_file.close()
-    return source_data
-
-
 
 for data_line in data['power']:
     raw_data = read_composite_line(data_line)
@@ -103,24 +88,19 @@ for data_line in data['records']:
         name = NCAA_NAMES[raw_name]
     teams[name].record = record
 
-results = []
 
-for key, val in teams.items():
-    results.append({'team': val, 'name': key, 'rating': val.get_combined_rating()})
-
-rankings = sorted(results, key=lambda team: team['rating'])
+rankings = sorted(list(teams.values()), key=lambda team: team.get_combined_rating())
 
 result_filename = '%s/output/results-week%s.csv' % (root_path, CURRENT_WEEK - 1)
 with open(result_filename, 'w+') as f:
     rank = 1
     for team in rankings:
-        result_string = build_result_string(team['team'])
+        result_string = build_result_string(team)
         string_rank = str(rank)
         # while len(string_rank) < 3:
         #     string_rank = " " + string_rank
         f.write(string_rank + "," + result_string + "\n")
         rank += 1
-        print(team['team'])
 
 reddit_filename = 'reddit.txt'
 with open(reddit_filename, 'w+') as f:
@@ -130,16 +110,16 @@ with open(reddit_filename, 'w+') as f:
     for team in rankings[:25]:
         text = build_reddit_string(rank, team, conference_flairs)
         f.write(text)
-        if team['name'] in dropped_out:
-            del dropped_out[team['name']]
+        if team.name in dropped_out:
+            del dropped_out[team.name]
         rank += 1
     f.write("\n")
     f.write("**Next:**\n")
     f.write("\n")
     for team in rankings[25:30]:
-        text = get_flair_string(team['name'])
+        text = team.get_flair_string(REDDIT_NAMES)
         text += " ("
-        text += str(team['team'].get_reddit_rating())
+        text += str(team.get_reddit_rating())
         text += ")\n"
         f.write(text)
         f.write("\n")
@@ -148,5 +128,5 @@ with open(reddit_filename, 'w+') as f:
     print(dropped_out)
     for key, val in dropped_out.items():
         team_name = key
-        flair = get_flair_string(team_name)
+        flair = teams[team_name].get_flair_string(REDDIT_NAMES)
         f.write("(" + val + ") " + flair)

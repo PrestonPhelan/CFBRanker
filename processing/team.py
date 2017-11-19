@@ -34,6 +34,7 @@ class Team:
         self.last_week = "NR"
         self.conference = conference
         self.record = None
+        self.flair_string = None
 
     def __str__(self):
         return ", ".join([self.name, str(self.get_combined_rating())[:5]])
@@ -74,3 +75,12 @@ class Team:
 
     def calculate_reddit_rating(self):
         self.reddit_rating = round(100*(130-self.get_combined_rating())/129, 1)
+
+    def get_flair_string(self, translations):
+        if self.flair_string is None:
+            if self.name in translations:
+                self.flair_string = translations[self.name]
+            else:
+                combo_string = "".join(self.name.split(" ")).lower()
+                self.flair_string = "[%s](#f/%s) %s" % (self.name, combo_string, self.name)
+        return self.flair_string

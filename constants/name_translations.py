@@ -37,6 +37,21 @@ NCAA_NAMES = {
     'Florida International': 'FIU'
 }
 
+REDDIT_NAMES = {
+    # Unlike others above, this dictionary has keys that
+    # are the standard names, and translates for output
+    # in reddit flairs
+    'East Carolina': '[ECU](#f/eastcarolina)',
+    'Florida Atlantic': '[FAU](#f/fau)',
+    'Hawaii': "[Hawai'i](#f/hawaii)",
+    'Louisiana Monroe': "[ULM](#f/ulm)",
+    'Massachusetts': "[UMass](#f/umass)",
+    'Miami (OH)': "[Miami (OH)](#f/miamioh)",
+    'South Florida': "[USF](#f/usf)",
+    'Texas A&M': "[Texas A&M](#f/texasam)",
+    'Western Kentucky': "[WKY](#f/wku)"
+}
+
 def find_match(name, dictionary):
     """For use with PERFORMANCE_NAMES."""
     if name == '':
