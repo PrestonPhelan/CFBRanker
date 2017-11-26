@@ -12,18 +12,25 @@ seconds_between_calls = 0.5
 
 id_source = "%s/constants/performance_ids.txt" % root_path
 
-class PerformanceSpider(scrapy.Spider):
-    name = "performance_ratings"
-    write_file = '%s/output/performance-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
-
-    def start_requests(self):
+class MothershipSpider(scrapy.Spider):
+    def run_requests(self, callback):
         base_url = 'https://www.espn.com/college-football/team/fpi/_/id/'
         with open(id_source) as f:
             for line in f:
                 url = base_url + str(line.strip())
-                yield scrapy.Request(url=url, callback=self.parse)
+                yield scrapy.Request(url=url, callback=callback)
                 if wait_between_calls:
                     time.sleep(seconds_between_calls)
+
+
+class PerformanceSpider(MothershipSpider):
+    name = "performance_ratings"
+    write_file = '%s/output/performance-ratings-week%s.csv' % (root_path, CURRENT_WEEK)
+
+    def start_requests(self):
+        requests = self.run_requests(self.parse)
+        for request in requests:
+            yield request
 
     def parse(self, response):
         target_rows = response.css('tr.oddrow td:last-of-type::text').extract()[:2]
@@ -38,3 +45,13 @@ class PerformanceSpider(scrapy.Spider):
     def _get_rank_from_row(self, row):
         split = row.split(' ')
         return split[1][1:-1]
+
+class ScheduleSpider(MothershipSpider):
+    name = "schedules"
+    wirte_directory = '%s/output/schedules' % root_path
+
+    def start_requests(self):
+        self.run_requests(self.parse)
+
+    def parse(self, response):
+        pass

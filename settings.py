@@ -2,4 +2,4 @@ import os
 
 ROOT_DIR = os.path.abspath('.')
 
-CURRENT_WEEK = 13
+CURRENT_WEEK = 14

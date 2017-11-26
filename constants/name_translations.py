@@ -41,15 +41,15 @@ REDDIT_NAMES = {
     # Unlike others above, this dictionary has keys that
     # are the standard names, and translates for output
     # in reddit flairs
-    'East Carolina': '[ECU](#f/eastcarolina)',
-    'Florida Atlantic': '[FAU](#f/fau)',
-    'Hawaii': "[Hawai'i](#f/hawaii)",
-    'Louisiana Monroe': "[ULM](#f/ulm)",
-    'Massachusetts': "[UMass](#f/umass)",
-    'Miami (OH)': "[Miami (OH)](#f/miamioh)",
-    'South Florida': "[USF](#f/usf)",
-    'Texas A&M': "[Texas A&M](#f/texasam)",
-    'Western Kentucky': "[WKY](#f/wku)"
+    'East Carolina': '[ECU](#f/eastcarolina) East Carolina',
+    'Florida Atlantic': '[FAU](#f/fau) Florida Atlantic',
+    'Hawaii': "[Hawai'i](#f/hawaii) Hawaii",
+    'Louisiana Monroe': "[ULM](#f/ulm) Louisiana-Monroe",
+    'Massachusetts': "[UMass](#f/umass) Massachusetts",
+    'Miami (OH)': "[Miami (OH)](#f/miamioh) Miami(OH)",
+    'South Florida': "[USF](#f/usf) South Florida",
+    'Texas A&M': "[Texas A&M](#f/texasam) Texas A&M",
+    'Western Kentucky': "[WKY](#f/wku) Western Kentucky"
 }
 
 def find_match(name, dictionary):
