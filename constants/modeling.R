@@ -2,7 +2,6 @@ get.modeling.data <- function() {
   raw_data = read.csv('composite_sagarin.csv')
   selected_data = raw_data[c("Sagarin", "Composite")]
   colnames(selected_data) <- c("rating", "composite")
-  print(selected_data)
   selected_data
 }
 
@@ -33,7 +32,6 @@ get.combined.data <- function() {
 
 get.ratings <- function(composite_data, model) {
   ratings = predict(model, data.frame(composite=composite_data$composite))
-  print(ratings)
   data.frame(team=composite_data$team, ratings=ratings)
 }
 
