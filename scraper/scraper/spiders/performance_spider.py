@@ -73,6 +73,7 @@ class ScheduleSpider(MothershipSpider):
         for character in standardized_name:
             if character.isalpha():
                 filename_format_name += character.lower()
+        filename_format_name += '.csv'
         write_file = self.write_directory + filename_format_name
         locations = self._extract_locations(response)
         opponents = self._extract_opponents(response)
@@ -80,13 +81,22 @@ class ScheduleSpider(MothershipSpider):
         idx = 0
         with open(write_file, 'w+') as f:
             while idx < len(locations):
-                line = "%s,%s,%s\n" % (locations[idx], opponents[idx], played[idx])
+                location = locations[idx]
+                opponent = opponents[idx]
+                if opponent.endswith('*'):
+                    location = 'N'
+                    opponent = opponent[:-1]
+                line = "%s,%s,%s\n" % (location, opponent, played[idx])
                 f.write(line)
                 idx += 1
 
     def _extract_locations(self, response):
         raw_locations = response.css('.game-schedule .game-status:not(.loss):not(.win)::text').extract()
         locations = map(lambda location: location.strip(), raw_locations)
+        additional_text = map(lambda response: map(lambda item: item.strip(), response.css('li::text').extract()), response.css('li.team-name'))
+        for idx, text_items in enumerate(additional_text):
+            if '*' in text_items:
+                locations[idx] = 'N'
         return locations
 
     def _extract_opponents(self, response):
