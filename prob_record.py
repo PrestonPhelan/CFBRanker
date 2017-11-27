@@ -2,15 +2,18 @@ import os
 from scipy.stats import norm
 from settings import CURRENT_WEEK
 from processing.builders import build_filename_format
+from constants.name_translations import NCAA_NAMES
 
 root_path = os.path.dirname(os.path.abspath(__file__))
 combos = {}
-RATING = 97
+RATING = 88
 loss_counts = {}
 
 with open(root_path + '/output/standings-week%s.csv' % CURRENT_WEEK) as f:
     for line in f:
         team, record = line.strip().split(',')
+        if team in NCAA_NAMES:
+            team = NCAA_NAMES[team]
         loss_counts[team] = int(record.split('-')[1])
 
 
@@ -82,4 +85,23 @@ def get_performance_probability(team):
         current_loss_counter += 1
     return sum_of_probs
 
-print(get_performance_probability('Clemson'))
+performance_probabilities = []
+
+team_source = root_path + "/constants/names.txt"
+with open(team_source, 'r') as f:
+    for line in f:
+        name, _ = line.strip().split(',')
+        performance_probabilitiy = get_performance_probability(name)
+        performance_probabilities.append({'team': name, 'probability': performance_probabilitiy})
+
+sorted_teams = sorted(performance_probabilities, key=lambda team_obj: team_obj['probability'])
+for idx, el in enumerate(sorted_teams):
+    print ("%s %s %s" % (idx + 1, el['team'], round(el['probability'], 4)))
+
+okla_win_probs = get_probabilities('Oklahoma')
+print(okla_win_probs)
+print(calculate_schedule_probability(okla_win_probs, 0))
+print(calculate_schedule_probability(okla_win_probs, 1))
+print(get_performance_probability('Oklahoma'))
+
+# print(get_performance_probability('Florida Atlantic'))
