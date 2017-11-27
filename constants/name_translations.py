@@ -52,6 +52,14 @@ REDDIT_NAMES = {
     'Western Kentucky': "[WKY](#f/wku) Western Kentucky"
 }
 
+SCHEDULE_NAMES = {
+    'Southern Mississippi': 'Southern Miss',
+    'UT San Antonio': 'UTSA',
+    'UMass': 'Massachusetts',
+    "Hawai'i": 'Hawaii',
+    'Florida Intl': 'FIU'
+}
+
 def find_match(name, dictionary):
     """For use with PERFORMANCE_NAMES."""
     if name == '':

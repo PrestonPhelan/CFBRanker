@@ -1,10 +1,9 @@
 import os
 from processing.builders import build_filename_format
 from processing.readers import process_power_name
-from constants.name_translations import POWER_NAMES
+from constants.name_translations import *
 
 root_path = os.path.dirname(os.path.abspath(__file__))
-print(root_path)
 combined_ratings = {}
 with open(root_path + "/output/ratings-from-combined.csv") as f:
     for line in f:
@@ -25,7 +24,7 @@ with open(root_path + "/output/ratings-from-power.csv") as f:
             team = POWER_NAMES[team]
         else:
             team = process_power_name(team)
-            power_ratings[team] = rating
+        power_ratings[team] = rating
 
 def get_and_save_rating(name):
     filename_format_name = build_filename_format(name)
@@ -46,27 +45,64 @@ def get_and_save_rating(name):
             elif location == '@':
                 location = 'A'
             # Build list of games
+            if opponent in SCHEDULE_NAMES:
+                opponent = SCHEDULE_NAMES[opponent]
             game_list.append({'location': location, 'opponent': opponent})
 
 
     # For each game
     for game in game_list:
         # Look up rating from combined
-        game['combined_rating'] = combined_ratings[game['opponent']]
-        # Look up rating from power
-        game['power_rating'] = power_ratings[game['opponent']]
+        if game['opponent'] in combined_ratings:
+            game['combined_rating'] = combined_ratings[game['opponent']]
+            # Look up rating from power
+            game['power_rating'] = power_ratings[game['opponent']]
+        else:
+            print("Couldn't find %s" % game['opponent'])
+            game['combined_rating'] = 40
+            game['power_rating'] = 40
 
     # Write file
     write_file = root_path + '/output/schedule_ratings/%s.csv' % filename_format_name
     with open(write_file, 'w+') as f:
         for game in game_list:
-            location_adjustment = 0
+            game['location_adjustment'] = 0
             if game['location'] == 'H':
-                location_adjustment = -2.8
+                game['location_adjustment'] = -2.8
             elif game['location'] == 'A':
-                    location_adjustment = 2.8
-            text = "%s,%s,%s,%s\n" % (game['location'], game['opponent'], game['combined_rating'] + location_adjustment, game['power_rating'] + location_adjustment)
+                    game['location_adjustment'] = 2.8
+            game['combined_rating'] = game['combined_rating'] + game['location_adjustment']
+            game['power_rating'] = game['power_rating'] + game['location_adjustment']
+            text = "%s,%s,%s,%s\n" % (game['location'], game['opponent'], game['combined_rating'], game['power_rating'])
             f.write(text)
+
+    sorted_games = sorted(game_list, key=lambda game: game['combined_rating'], reverse=True)
+    reddit_write_file = root_path + '/output/reddit_schedules/%s.txt' % filename_format_name
+    with open(reddit_write_file, 'w+') as f:
+        columns = ["Opponent", "Loc", "Rating"]
+        header = " | ".join(columns) + "\n"
+        barrier = "|".join(map(lambda _: "---", columns)) + "\n"
+        f.write(header)
+        f.write(barrier)
+        for game in sorted_games:
+            rated_difficulty = round((game['combined_rating'] - 35) * 100 / 70)
+            opponent = game['opponent']
+            if opponent in REDDIT_NAMES:
+                opponent = REDDIT_NAMES[opponent]
+            else:
+                combo_string = "".join(opponent.split(" ")).lower()
+                opponent = "[%s](#f/%s) %s" % (opponent, combo_string, opponent)
+            text = "%(opponent)s | %(location)s | %(rating)s |\n" % {
+                'opponent': opponent,
+                'location': game['location'],
+                'rating': rated_difficulty
+            }
+            f.write(text)
+
     print('Done with %s' % name)
 
-get_and_save_rating('Florida')
+team_source = root_path + "/constants/names.txt"
+with open(team_source, 'r') as f:
+    for line in f:
+        name, _ = line.strip().split(',')
+        get_and_save_rating(name)
