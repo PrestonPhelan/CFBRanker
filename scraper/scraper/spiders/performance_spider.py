@@ -6,6 +6,7 @@ root_path = '/'.join(local_path.split('/')[:-3])
 sys.path.append(root_path)
 from settings import CURRENT_WEEK
 from constants.name_translations import PERFORMANCE_NAMES, find_match
+from processing.builders import build_filename_format
 
 # Spider settings
 wait_between_calls = True
@@ -69,10 +70,7 @@ class ScheduleSpider(MothershipSpider):
             standardized_name = PERFORMANCE_NAMES[team_name]
         else:
             standardized_name = find_match(team_name, self.names)
-        filename_format_name = ''
-        for character in standardized_name:
-            if character.isalpha():
-                filename_format_name += character.lower()
+        filename_format_name = build_filename_format(standardized_name)
         filename_format_name += '.csv'
         write_file = self.write_directory + filename_format_name
         locations = self._extract_locations(response)

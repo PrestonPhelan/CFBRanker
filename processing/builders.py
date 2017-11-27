@@ -42,3 +42,10 @@ def build_reddit_string(idx, team, conference_flairs, flair_dict):
         'rating': rating
     }
     return result
+
+def build_filename_format(team_name):
+    filename_format_name = ''
+    for character in team_name:
+        if character.isalpha():
+            filename_format_name += character.lower()
+    return filename_format_name

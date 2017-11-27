@@ -25,7 +25,7 @@ get.combined.data <- function() {
   sourcefile = 'CFBRanker/output/results-week14.csv'
   print('Reading data from...')
   print(sourcefile)
-  comined_data = read.csv(sourcefile, header=FALSE)
+  combined_data = read.csv(sourcefile, header=FALSE)
   colnames(combined_data) <- c("rank", "power", "performance", "composite", "rating", "team")
   combined_data
 }
