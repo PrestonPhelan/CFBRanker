@@ -41,15 +41,4 @@ def build_reddit_string(idx, team, conference_flairs, flair_dict):
         'conference': conf_flair,
         'rating': rating
     }
-    # result = ""
-    # result += str(rank) + " | "
-    # result += str(team.last_week) + " | "
-    # result += team.get_flair_string(flair_dict)
-    # result += " | "
-    # result += team.record
-    # result += " | "
-    # result += conference_flairs[team.conference]
-    # result += " | "
-    # result += str(team.get_reddit_rating())
-    # result += " |\n"
     return result
