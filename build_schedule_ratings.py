@@ -76,7 +76,7 @@ def get_and_save_rating(name):
             text = "%s,%s,%s,%s\n" % (game['location'], game['opponent'], game['combined_rating'], game['power_rating'])
             f.write(text)
 
-    sorted_games = sorted(game_list, key=lambda game: game['combined_rating'], reverse=True)
+    sorted_games = sorted(game_list, key=lambda game: game['power_rating'], reverse=True)
     reddit_write_file = root_path + '/output/reddit_schedules/%s.txt' % filename_format_name
     with open(reddit_write_file, 'w+') as f:
         columns = ["Opponent", "Loc", "Rating"]
@@ -85,7 +85,7 @@ def get_and_save_rating(name):
         f.write(header)
         f.write(barrier)
         for game in sorted_games:
-            rated_difficulty = round((game['combined_rating'] - 35) * 100 / 70)
+            rated_difficulty = round((game['power_rating'] - 35) * 100 / 70)
             opponent = game['opponent']
             if opponent in REDDIT_NAMES:
                 opponent = REDDIT_NAMES[opponent]
