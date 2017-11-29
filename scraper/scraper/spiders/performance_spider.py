@@ -76,15 +76,24 @@ class ScheduleSpider(MothershipSpider):
         locations = self._extract_locations(response)
         opponents = self._extract_opponents(response)
         played = self._game_played(response)
+        game_results = self._extract_scores(response)
         idx = 0
         with open(write_file, 'w+') as f:
-            while idx < len(locations):
+            skips = 0
+            while idx < len(opponents):
                 location = locations[idx]
                 opponent = opponents[idx]
                 if opponent.endswith('*'):
                     location = 'N'
                     opponent = opponent[:-1]
-                line = "%s,%s,%s\n" % (location, opponent, played[idx])
+                if played[idx]:
+                    result_string = "%s,%s" % (
+                        game_results['results'][idx - skips],
+                        game_results['scores'][idx - skips])
+                else:
+                    result_string = "--,--"
+                    skips += 1
+                line = "%s,%s,%s,%s\n" % (location, opponent, played[idx], result_string)
                 f.write(line)
                 idx += 1
 
@@ -99,6 +108,11 @@ class ScheduleSpider(MothershipSpider):
 
     def _extract_opponents(self, response):
         return response.css('li.team-name a::text').extract()
+
+    def _extract_scores(self, response):
+        results = response.css('.game-status.loss ::text,.game-status.win ::text').extract()
+        scores = response.css('.score a::text').extract()
+        return { 'results': results, 'scores': scores }
 
     def _game_played(self, response):
         game_scores = response.css(".tablehead tr:last-of-type .tablehead tr[class$='row'] td:last-of-type::text").extract()

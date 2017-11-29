@@ -49,7 +49,7 @@ REDDIT_NAMES = {
     'Miami (OH)': "[Miami (OH)](#f/miamioh) Miami(OH)",
     'South Florida': "[USF](#f/usf) South Florida",
     'Texas A&M': "[Texas A&M](#f/texasam) Texas A&M",
-    'Western Kentucky': "[WKY](#f/wku) Western Kentucky"
+    'Western Kentucky': "[WKU](#f/wku) Western Kentucky"
 }
 
 SCHEDULE_NAMES = {
