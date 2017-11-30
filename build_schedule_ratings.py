@@ -58,14 +58,20 @@ def get_and_save_rating(name):
                     overtime = True
                 if result == 'W':
                     differential = int(win_score) - int(lose_score)
+                    own_score = win_score
+                    opp_score = lose_score
                 elif result == 'L':
                     differential = int(lose_score) - int(win_score)
+                    own_score = lose_score
+                    opp_score = win_score
                 else:
                     raise "Invalid result found: %s" % result
                 game_list.append({
                     'location': location,
                     'opponent': opponent,
                     'result': result,
+                    'own_score': own_score,
+                    'opp_score': opp_score,
                     'differential': differential,
                     'overtime': overtime
                 })
@@ -124,7 +130,7 @@ def get_and_save_rating(name):
                 result_emphasized_score = calculate_res(game['result'], game['power_rating'], game['differential'], game['overtime'])
                 result_emphasized_differential += result_emphasized_score
                 game_count += 1
-                text = "%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+                text = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
                     game['location'],
                     game['opponent'],
                     game['combined_rating'],
@@ -132,7 +138,9 @@ def get_and_save_rating(name):
                     game['result'],
                     game['differential'],
                     game['overtime'],
-                    game_score)
+                    game_score,
+                    game['own_score'],
+                    game['opp_score'])
                 f.write(text)
 
 

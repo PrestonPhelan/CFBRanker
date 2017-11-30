@@ -24,6 +24,8 @@ with open(name_source, 'r') as f:
 
 raw_a = []
 raw_b = []
+raw_offdef_a = []
+raw_offdef_b = []
 def get_coefficients_from_schedule(team):
     # [H-A] * HFA + N * self - (1 * opp) for each = differential
     filename_format_name = build_filename_format(team)
@@ -43,7 +45,13 @@ def get_coefficients_from_schedule(team):
             opponent = columns[1]
             if opponent in idx_lookup:
                 coefficients[idx_lookup[opponent]] -= 1
-            total_differential += int(columns[5])
+            if columns[6] == "True":
+                if int(columns[5]) > 0:
+                    total_differential += 0.5
+                else:
+                    total_differential -= 0.5
+            else:
+                total_differential += int(columns[5])
     raw_a.append(coefficients)
     raw_b.append(total_differential - location_adv)
 
