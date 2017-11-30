@@ -1,5 +1,6 @@
 import os
 import statistics
+import math
 from processing.builders import build_filename_format
 from processing.readers import process_power_name
 from constants.name_translations import *
@@ -85,10 +86,27 @@ def get_and_save_rating(name):
             game['combined_rating'] = '--'
             game['power_rating'] = '--'
 
+    def calculate_res(result, opp_rating, differential, overtime):
+        if overtime:
+            if result == 'W':
+                return opp_rating + 2.0
+            elif result == 'L':
+                return opp_rating - 2.0
+            else:
+                raise 'Unknown result found %s' % result
+        else:
+            if result == 'W':
+                return opp_rating + 4.0 * math.sqrt(differential)
+            elif result == 'L':
+                return opp_rating - 4.0 * math.sqrt( -1.0 * differential )
+            else:
+                raise 'Unknown result found %s' % result
+
     # Write file
     write_file = root_path + '/output/schedule_ratings/%s.csv' % filename_format_name
     with open(write_file, 'w+') as f:
         adjusted_differential = 0
+        result_emphasized_differential = 0
         game_count = 0
         game_scores = []
         for game in game_list:
@@ -103,6 +121,8 @@ def get_and_save_rating(name):
                 game_score = float(game['power_rating']) + game['differential']
                 game_scores.append(game_score)
                 adjusted_differential += game_score
+                result_emphasized_score = calculate_res(game['result'], game['power_rating'], game['differential'], game['overtime'])
+                result_emphasized_differential += result_emphasized_score
                 game_count += 1
                 text = "%s,%s,%s,%s,%s,%s,%s,%s\n" % (
                     game['location'],
@@ -142,7 +162,8 @@ def get_and_save_rating(name):
     team_sor_ratings.append({
         'team': name,
         'rating': adjusted_differential / game_count,
-        'median': statistics.median(game_scores)})
+        'median': statistics.median(game_scores),
+        'results_emphasized_rating': float(result_emphasized_differential) / game_count})
     print('Done with %s' % name)
 
 team_source = root_path + "/constants/names.txt"
@@ -151,6 +172,6 @@ with open(team_source, 'r') as f:
         name, _ = line.strip().split(',')
         get_and_save_rating(name)
 
-sorted_sor = sorted(team_sor_ratings, key=lambda team: (team['rating'] + team['median']) / 2.0, reverse=True)
+sorted_sor = sorted(team_sor_ratings, key=lambda team: team['results_emphasized_rating'], reverse=True)
 for idx, team in enumerate(sorted_sor):
-    print("%s %s %s %s %s" % (idx + 1, team['team'], team['rating'], team['median'], (team['rating'] + team['median']) / 2.0))
+    print("%s %s %s %s %s %s" % (idx + 1, team['team'], team['results_emphasized_rating'], team['rating'], team['median'], (team['rating'] + team['median']) / 2.0))
