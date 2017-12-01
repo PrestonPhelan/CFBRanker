@@ -80,11 +80,6 @@ def pure_points_standard_deviation(team):
             actual_diff = game.own_score - game.opp_score
         residual = actual_diff - predicted_diff
         sum_sq_err += residual * residual
-        if team.name == "Eastern Michigan":
-            print(game)
-            print(predicted_diff)
-            print(residual)
-            print(sum_sq_err)
     return numpy.sqrt(sum_sq_err / float(len(team.games) - 1))
 
 ### GET INPUT DATA ###
@@ -175,18 +170,80 @@ a = numpy.array(lin_coeffs)
 b = numpy.array(lin_results)
 estimated_coefficients = numpy.linalg.solve(a, b)
 
+
+
+
+lin_coeffs_offdef = []
+lin_results_offdef = []
+for name, team in teams.items():
+    off_id = team.id * 2
+    def_id = None
+    if team.id != CONSTANT_ID:
+        def_id = team.id * 2 + 1
+    # Build linear phrase & sum differential
+    off_coefficients = [0] * (NUM_TEAMS * 2 - 1)
+    def_coefficients = [0] * (NUM_TEAMS * 2 - 1)
+    total_points = 0
+    total_points_allowed = 0
+    location_adv = 0
+    for game in team.games:
+        off_coefficients[off_id] += 1
+        if def_id is not None:
+            def_coefficients[def_id] += 1
+            def_coefficients[game.opponent.id * 2] += 1
+        if ESTIMATE_LOCATION_COEFF:
+            off_coefficients[-1] += location_coefficient(game.location)
+            def_coefficients[-1] += location_coefficient(game.location)
+        else:
+            location_adv += location_coefficient(game.location) * HOME_FIELD_ADVANTAGE / 2.0
+        if game.opponent.id != CONSTANT_ID:
+            off_coefficients[game.opponent.id * 2 + 1] += 1
+        total_points += game.own_score
+        total_points_allowed += game.opp_score
+    # Add to an array of arrays
+    lin_coeffs_offdef.append(off_coefficients)
+    if def_id is not None:
+        lin_coeffs_offdef.append(def_coefficients)
+    # Append differential to results
+    lin_results_offdef.append(total_points - location_adv)
+    if def_id is not None:
+        lin_results_offdef.append(total_points_allowed - location_adv)
+
+a_od = numpy.array(lin_coeffs_offdef)
+b_od = numpy.array(lin_results_offdef)
+estimated_coefficients_offdef = numpy.linalg.solve(a_od, b_od)
+
 average = sum(estimated_coefficients) / float(NUM_TEAMS)
+
+total_off = 0
+total_def = 0
+for idx, rating in enumerate(estimated_coefficients_offdef):
+    if idx % 2 == 0:
+        total_off += rating
+    else:
+        total_def += rating
+average_off = total_off / float(NUM_TEAMS)
+average_def = total_def / float(NUM_TEAMS)
 for i in range(NUM_TEAMS):
     name = id_to_team[i]
+    team = teams[name]
+    offense = estimated_coefficients_offdef[i * 2]
     if i == CONSTANT_ID:
         estimate = 0
+        defense = 0
     else:
         estimate = estimated_coefficients[i]
-    teams[name].ratings['pure_points'] = estimate + 50 - average
-
+        defense = estimated_coefficients_offdef[i * 2 + 1]
+    team.ratings['pure_points'] = estimate + 50 - average
+    team.ratings['pp_offense'] = offense + average_def
+    team.ratings['pp_defense'] = defense + average_off
 
 for team in list(teams.values()):
     team.ratings['pure_points_std'] = pure_points_standard_deviation(team)
 
 for team in sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True):
-    print("%s %s" % (team.name, team.ratings['pure_points']))
+    print("%s %s %s %s" % (
+        team.name,
+        round(team.ratings['pure_points'], 2),
+        round(team.ratings['pp_offense'], 2),
+        round(team.ratings['pp_defense'], 2)))
