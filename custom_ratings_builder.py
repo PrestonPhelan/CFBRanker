@@ -13,6 +13,8 @@ OVERTIME_ADJUSTMENT = True
 NUM_TEAMS = 130
 CONSTANT_ID = NUM_TEAMS - 1
 HOME_FIELD_ADVANTAGE = 3.0
+RATING_RANGE_HIGH = 85
+RATING_RANGE_LOW = 15
 
 if ESTIMATE_LOCATION_COEFF:
     LIN_EQ_SIZE = NUM_TEAMS
@@ -34,6 +36,9 @@ def location_coefficient(string):
         'H': 1
     }
     return coefficients[string]
+
+def location_adjustment(string):
+    return location_coefficient(string) * HOME_FIELD_ADVANTAGE
 
 def read_score(score_string):
     win_score, lose_score = score_string.split('-')
@@ -81,6 +86,12 @@ def pure_points_standard_deviation(team):
         residual = actual_diff - predicted_diff
         sum_sq_err += residual * residual
     return numpy.sqrt(sum_sq_err / float(len(team.games) - 1))
+
+def game_difficulty(game):
+    return game.opponent.ratings['pure_points'] - location_adjustment(game.location)
+
+def adjusted_rating(rating):
+    return round(float(rating - RATING_RANGE_LOW) * 100 / (RATING_RANGE_HIGH - RATING_RANGE_LOW))
 
 ### GET INPUT DATA ###
 # Create team objects
@@ -241,9 +252,67 @@ for i in range(NUM_TEAMS):
 for team in list(teams.values()):
     team.ratings['pure_points_std'] = pure_points_standard_deviation(team)
 
-for team in sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True):
-    print("%s %s %s %s" % (
+sorted_teams = sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True)
+output_file = '%s/output/custom-power-week%s.csv' % (root_path, CURRENT_WEEK)
+with open(output_file, 'w+') as f:
+    for idx, team in enumerate(sorted_teams):
+        f.write('%(rank)s,%(name)s,%(rating)s,%(offense)s,%(defense)s,%(std)s\n' % {
+            'rank': idx + 1,
+            'name': team.name,
+            'rating': round(team.ratings['pure_points'], 2),
+            'offense': round(team.ratings['pp_offense'], 2),
+            'defense': round(team.ratings['pp_defense'], 2),
+            'std': round(team.ratings['pure_points_std'], 2)
+        })
+
+for idx, team in enumerate(sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True)):
+    print("%s %s %s %s %s" % (
+        idx + 1,
         team.name,
         round(team.ratings['pure_points'], 2),
         round(team.ratings['pp_offense'], 2),
         round(team.ratings['pp_defense'], 2)))
+
+# for idx, team in enumerate(sorted(list(teams.values()), key=lambda team: team.ratings['pp_offense'], reverse=True)):
+#     print("%s %s %s" % (
+#         idx + 1,
+#         team.name,
+#         round(team.ratings['pp_offense'], 2),
+#         ))
+#
+# for idx, team in enumerate(sorted(list(teams.values()), key=lambda team: team.ratings['pp_defense'], reverse=False)):
+#     print("%s %s %s" % (
+#         idx + 1,
+#         team.name,
+#         round(team.ratings['pp_defense'], 2),
+#         ))
+
+
+# WRITE SCHEDULE RATING FILES
+for team in list(teams.values()):
+    filename_format_name = build_filename_format(team.name)
+    write_file = '%s/output/reddit_schedules/%s.txt' % (root_path, filename_format_name)
+    with open(write_file, 'w+') as f:
+        label_string = team.name + "(%s)" % team.record
+        columns = ["Opponent", "Rec", "Loc", "Difficulty", "Result", "Score", "Game Rating"]
+        header = " | ".join(columns) + "\n"
+        barrier = "|".join(map(lambda _: "---", columns)) + "\n"
+        f.write(header)
+        f.write(barrier)
+        for game in sorted(list(team.games), key=lambda game: game_difficulty(game), reverse=True):
+            score_string = "%s-%s" % (game.own_score, game.opp_score)
+            if game.overtime:
+                if game.num_overtimes > 1:
+                    score_string += " %sOT" % game.num_overtimes
+                else:
+                    score_string += " OT"
+            text = "%(opponent)s | %(record)s | %(location)s | %(difficulty)s | %(result)s | %(score)s | %(game_rating)s |\n" % {
+                'opponent': game.opponent.name,
+                'location': game.location,
+                'record': game.opponent.record,
+                'difficulty': adjusted_rating(game_difficulty(game)),
+                'result': game.result,
+                'score': score_string,
+                'game_rating': adjusted_rating(game_difficulty(game) + game.own_score - game.opp_score)
+            }
+            f.write(text)
