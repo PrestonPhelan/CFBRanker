@@ -3,12 +3,10 @@ class Team:
     @classmethod
     def build_teams_from_file(cls, sourcefile):
         teams = {}
-        name_list = None
         with open(sourcefile) as f:
-            name_list = list(f)
-        for line in name_list:
-            name, conference = line.strip().split(',')
-            teams[name] = Team(name, conference)
+            for line in f:
+                name, conference = line.strip().split(',')
+                teams[name] = Team(name, conference)
         return teams
 
     @classmethod
@@ -26,14 +24,17 @@ class Team:
 
     def __init__(self, name, conference):
         self.name = name
+        self.conference = conference
+        self.record = None
+        self.games = set()
+        self.id = None
+
         self.power_mean = None
         self.strength_of_record = None
         self.game_control = None
         self.combined_rating = None
         self.reddit_rating = None
         self.last_week = "NR"
-        self.conference = conference
-        self.record = None
         self.flair_string = None
 
     def __str__(self):

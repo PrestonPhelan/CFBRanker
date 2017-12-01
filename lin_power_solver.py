@@ -3,6 +3,8 @@ import os
 root_path = os.path.dirname(os.path.abspath(__file__))
 
 from processing.builders import build_filename_format
+from constants.name_translations import POWER_NAMES
+from processing.readers import process_power_name
 from settings import CURRENT_WEEK
 
 name_source = '%s/constants/names.txt' % root_path
@@ -63,15 +65,43 @@ a = numpy.array(raw_a)
 b = numpy.array(raw_b)
 x = numpy.linalg.solve(a, b)
 
+ratings_from_power = {}
+composite_power_source = '%s/output/ratings-from-power.csv' % root_path
+with open(composite_power_source, 'r') as f:
+    for line in f:
+        _, name, rating = line.strip().split(',')
+        if name != '"team"':
+            name = name[1:-1]
+            if name in POWER_NAMES:
+                name = POWER_NAMES[name]
+            else:
+                name = process_power_name(name)
+            ratings_from_power[name] = float(rating)
+
 power_ratings = []
 for idx, name in enumerate(names):
-    power_ratings.append({'name': name, 'rating': x[idx] + 30})
-power_ratings.append({'name': constant_team, 'rating': 30})
+    pure_rating = x[idx] + 60
+    power_rating = ratings_from_power[name]
+    power_ratings.append({
+    'name': name,
+    'pure_rating': pure_rating,
+    'power_rating': power_rating,
+    'combined_rating': (power_rating + pure_rating) / 2.0})
+power_ratings.append({
+    'name': constant_team,
+    'pure_rating': 60,
+    'power_rating': ratings_from_power[constant_team],
+    'combined_rating': (60 + ratings_from_power[constant_team]) / 2.0})
 
 rnk = 1
 output_file = '%s/output/custom-power-week%s.csv' % (root_path, CURRENT_WEEK)
 with open(output_file, 'w+') as f:
-    for team in sorted(power_ratings, key=lambda team: team['rating'], reverse=True):
-        f.write('%s,%s,%s\n' % (rnk, team['name'], team['rating']))
-        print('%s %s %s' % (rnk, team['name'], team['rating']))
+    for team in sorted(power_ratings, key=lambda team: team['combined_rating'], reverse=True):
+        f.write('%s,%s,%s,%s,%s\n' % (
+            rnk,
+            team['name'],
+            team['combined_rating'],
+            team['pure_rating'],
+            team['power_rating']))
+        print('%s %s %s' % (rnk, team['name'], team['combined_rating']))
         rnk += 1

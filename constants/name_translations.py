@@ -69,3 +69,15 @@ def find_match(name, dictionary):
         return search_name
     else:
         return find_match(search_name, dictionary)
+
+def generic_translation(name, dictionary):
+    if name in dictionary:
+        return dictionary[name]
+    else:
+        return name
+
+def translate_ncaa_name(name):
+    return generic_translation(name, NCAA_NAMES)
+
+def translate_schedule_name(name):
+    return generic_translation(name, SCHEDULE_NAMES)
