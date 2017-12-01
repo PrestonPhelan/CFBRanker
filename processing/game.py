@@ -18,7 +18,10 @@ class Game:
             'opp_score': self.opp_score
         }
         if self.overtime:
-            string_to_print = string_to_print + " %sOT\n" % self.num_overtimes
+            if self.num_overtimes > 1:
+                string_to_print = string_to_print + " %sOT\n" % self.num_overtimes
+            else:
+                string_to_print = string_to_print + " OT\n"
         else:
             string_to_print += "\n"
 

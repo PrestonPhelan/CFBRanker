@@ -61,6 +61,32 @@ def assign_scores(result, result_details):
     else:
         raise "Unexpected result %s" % result
 
+def predict_diff(team, game):
+    own_rating = team.ratings['pure_points']
+    opp_rating = game.opponent.ratings['pure_points']
+    location_adjustment = location_coefficient(game.location) * HOME_FIELD_ADVANTAGE
+    return own_rating - opp_rating + location_adjustment
+
+def pure_points_standard_deviation(team):
+    sum_sq_err = 0
+    for game in team.games:
+        predicted_diff = predict_diff(team, game)
+        if game.overtime and OVERTIME_ADJUSTMENT:
+            if game.own_score > game.opp_score:
+                actual_diff = 0.5
+            else:
+                actual_diff = -0.5
+        else:
+            actual_diff = game.own_score - game.opp_score
+        residual = actual_diff - predicted_diff
+        sum_sq_err += residual * residual
+        if team.name == "Eastern Michigan":
+            print(game)
+            print(predicted_diff)
+            print(residual)
+            print(sum_sq_err)
+    return numpy.sqrt(sum_sq_err / float(len(team.games) - 1))
+
 ### GET INPUT DATA ###
 # Create team objects
 team_list_source = "%s/constants/names.txt" % root_path
@@ -149,17 +175,18 @@ a = numpy.array(lin_coeffs)
 b = numpy.array(lin_results)
 estimated_coefficients = numpy.linalg.solve(a, b)
 
-for i in range(NUM_TEAMS - 1):
-    name = id_to_team[i]
-    estimate = estimated_coefficients[i]
-    teams[name].ratings['pure_points'] = estimate
-
-name = id_to_team[CONSTANT_ID]
-estimate = 0
-teams[name].ratings['pure_points'] = estimate
-
-print("Average:")
-print(sum(estimated_coefficients) / float(NUM_TEAMS))
 average = sum(estimated_coefficients) / float(NUM_TEAMS)
+for i in range(NUM_TEAMS):
+    name = id_to_team[i]
+    if i == CONSTANT_ID:
+        estimate = 0
+    else:
+        estimate = estimated_coefficients[i]
+    teams[name].ratings['pure_points'] = estimate + 50 - average
+
+
+for team in list(teams.values()):
+    team.ratings['pure_points_std'] = pure_points_standard_deviation(team)
+
 for team in sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True):
-    print("%s %s" % (team.name, team.ratings['pure_points'] + 50 - average))
+    print("%s %s" % (team.name, team.ratings['pure_points']))
