@@ -15,6 +15,8 @@ CONSTANT_ID = NUM_TEAMS - 1
 HOME_FIELD_ADVANTAGE = 3.0
 RATING_RANGE_HIGH = 85
 RATING_RANGE_LOW = 15
+RESULTS_EMPHASIZED_RATING_CONSTANT = 7
+RESULTS_EMPHASIZED_RATING_COEFFICIENT = 0.5
 
 if ESTIMATE_LOCATION_COEFF:
     LIN_EQ_SIZE = NUM_TEAMS
@@ -145,6 +147,7 @@ for name, team in teams.items():
 id_to_team = [None] * NUM_TEAMS
 lin_coeffs = []
 lin_results = []
+lin_results_rer = []
 constant_team = None
 # For each team
 for name, team in teams.items():
@@ -155,6 +158,7 @@ for name, team in teams.items():
     # Build linear phrase & sum differential
     coefficients = [0] * LIN_EQ_SIZE
     total_differential = 0
+    rer_differential = 0
     location_adv = 0
     for game in team.games:
         if team.id != CONSTANT_ID:
@@ -162,25 +166,40 @@ for name, team in teams.items():
         if ESTIMATE_LOCATION_COEFF:
             coefficients[-1] += location_coefficient(game.location)
         else:
-            location_adv += location_coefficient(game.location) * HOME_FIELD_ADVANTAGE
+            game_location_adv = location_coefficient(game.location) * HOME_FIELD_ADVANTAGE
+            location_adv += game_location_adv
         if game.opponent.id != CONSTANT_ID:
             coefficients[game.opponent.id] -= 1
         if OVERTIME_ADJUSTMENT and game.overtime == "True":
-            if game.own_score < game.opp_score:
+            if game.result == "W":
                 total_differential -= 0.5
-            else:
+                rer_differential -= RESULTS_EMPHASIZED_RATING_CONSTANT / 2.0
+            elif game.result == "L":
                 total_differential += 0.5
+                rer_differential += RESULTS_EMPHASIZED_RATING_CONSTANT / 2.0
+            else:
+                raise "Unexpected result: %s" % result
         else:
-            total_differential += game.own_score - game.opp_score
+            raw_differential = game.own_score - game.opp_score
+            total_differential += raw_differential
+            rer_differential += raw_differential * 0.5
+            if game.result == "W":
+                rer_differential += 7
+            elif game.result == "L":
+                rer_differential -= 7
+            else:
+                raise "Unexpected result: %s" % result
     # Add to an array of arrays
     lin_coeffs.append(coefficients)
     # Append differential to results
     lin_results.append(total_differential - location_adv)
+    lin_results_rer.append(rer_differential - location_adv * 0.5)
 
 a = numpy.array(lin_coeffs)
 b = numpy.array(lin_results)
+b_rer = numpy.array(lin_results_rer)
 estimated_coefficients = numpy.linalg.solve(a, b)
-
+estimated_coeff_rer = numpy.linalg.solve(a, b_rer)
 
 
 
@@ -316,3 +335,5 @@ for team in list(teams.values()):
                 'game_rating': adjusted_rating(game_difficulty(game) + game.own_score - game.opp_score)
             }
             f.write(text)
+
+# ADD RESULTS EMPHASIZED RATING
