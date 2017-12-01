@@ -28,6 +28,7 @@ class Team:
         self.record = None
         self.games = set()
         self.id = None
+        self.ratings = {}
 
         self.power_mean = None
         self.strength_of_record = None
@@ -38,7 +39,8 @@ class Team:
         self.flair_string = None
 
     def __str__(self):
-        return ", ".join([self.name, str(self.get_combined_rating())[:5]])
+        return self.name
+    #     return ", ".join([self.name, str(self.get_combined_rating())[:5]])
 
     def set_power_mean(self, rating):
         self.power_mean = rating

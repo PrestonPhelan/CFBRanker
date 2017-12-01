@@ -1,3 +1,4 @@
+import numpy
 import os
 root_path = os.path.dirname(os.path.abspath(__file__))
 
@@ -7,6 +8,17 @@ from processing.game import Game
 from processing.team import Team
 from settings import CURRENT_WEEK
 
+ESTIMATE_LOCATION_COEFF = False
+OVERTIME_ADJUSTMENT = True
+NUM_TEAMS = 130
+CONSTANT_ID = NUM_TEAMS - 1
+HOME_FIELD_ADVANTAGE = 3.0
+
+if ESTIMATE_LOCATION_COEFF:
+    LIN_EQ_SIZE = NUM_TEAMS
+else:
+    LIN_EQ_SIZE = NUM_TEAMS - 1
+
 def translate_location(string):
     translations = {
         'N': 'N',
@@ -14,6 +26,14 @@ def translate_location(string):
         '@': 'A'
     }
     return translations[string]
+
+def location_coefficient(string):
+    coefficients = {
+        'N': 0,
+        'A': -1,
+        'H': 1
+    }
+    return coefficients[string]
 
 def read_score(score_string):
     win_score, lose_score = score_string.split('-')
@@ -81,10 +101,65 @@ for name, team in teams.items():
             # Add to team's set of games
             team.games.add(Game({
                 'location': location,
-                'opponent': opponent,
+                'opponent': teams[opponent],
                 'result': result,
                 'own_score': int(own_score),
                 'opp_score': int(opp_score),
                 'overtime': result_details['overtime'],
                 'num_overtimes': result_details['num_overtimes']
             }))
+
+## LINEAR EQUATION SYSTEM SOLVE
+id_to_team = [None] * NUM_TEAMS
+lin_coeffs = []
+lin_results = []
+constant_team = None
+# For each team
+for name, team in teams.items():
+    id_to_team[team.id] = name
+    if team.id == CONSTANT_ID:
+        constant_team = team
+        continue
+    # Build linear phrase & sum differential
+    coefficients = [0] * LIN_EQ_SIZE
+    total_differential = 0
+    location_adv = 0
+    for game in team.games:
+        if team.id != CONSTANT_ID:
+            coefficients[team.id] += 1
+        if ESTIMATE_LOCATION_COEFF:
+            coefficients[-1] += location_coefficient(game.location)
+        else:
+            location_adv += location_coefficient(game.location) * HOME_FIELD_ADVANTAGE
+        if game.opponent.id != CONSTANT_ID:
+            coefficients[game.opponent.id] -= 1
+        if OVERTIME_ADJUSTMENT and game.overtime == "True":
+            if game.own_score < game.opp_score:
+                total_differential -= 0.5
+            else:
+                total_differential += 0.5
+        else:
+            total_differential += game.own_score - game.opp_score
+    # Add to an array of arrays
+    lin_coeffs.append(coefficients)
+    # Append differential to results
+    lin_results.append(total_differential - location_adv)
+
+a = numpy.array(lin_coeffs)
+b = numpy.array(lin_results)
+estimated_coefficients = numpy.linalg.solve(a, b)
+
+for i in range(NUM_TEAMS - 1):
+    name = id_to_team[i]
+    estimate = estimated_coefficients[i]
+    teams[name].ratings['pure_points'] = estimate
+
+name = id_to_team[CONSTANT_ID]
+estimate = 0
+teams[name].ratings['pure_points'] = estimate
+
+print("Average:")
+print(sum(estimated_coefficients) / float(NUM_TEAMS))
+average = sum(estimated_coefficients) / float(NUM_TEAMS)
+for team in sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True):
+    print("%s %s" % (team.name, team.ratings['pure_points'] + 50 - average))
