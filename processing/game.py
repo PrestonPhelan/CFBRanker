@@ -26,3 +26,14 @@ class Game:
             string_to_print += "\n"
 
         return string_to_print
+
+    def difficulty(self, location_adjustment_func):
+        return self.opponent.ratings['pure_points'] - location_adjustment_func(self.location)
+
+    def _default_location_adjustment(self, string):
+        results = {
+            'N': 0,
+            'H': 3,
+            'A': -3
+        }
+        return results[string]

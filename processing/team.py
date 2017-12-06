@@ -29,6 +29,7 @@ class Team:
         self.games = set()
         self.id = None
         self.ratings = {}
+        self.rankings = {}
 
         self.power_mean = None
         self.strength_of_record = None
@@ -37,6 +38,9 @@ class Team:
         self.reddit_rating = None
         self.last_week = "NR"
         self.flair_string = None
+
+        self.sim_championships = 0.0
+        self.wins_this_sim = 0
 
     def __str__(self):
         return self.name
@@ -87,3 +91,6 @@ class Team:
                 combo_string = "".join(self.name.split(" ")).lower()
                 self.flair_string = "[%s](#f/%s) %s" % (self.name, combo_string, self.name)
         return self.flair_string
+
+    def composite_avg_by(self, rank_set):
+        return (self.ratings['bucket_estimates'][rank_set] + self.ratings['pure_points'] + self.ratings['sor_wa']) / 3.0
