@@ -24,7 +24,14 @@ PERFORMANCE_NAMES = {
  "Hawai'i Rainbow Warriors": "Hawaii",
  "Southern Mississippi Golden Eagles": "Southern Miss",
  "UT San Antonio Roadrunners": "UTSA",
- "UMass Minutemen": "Massachusetts"
+ "UMass Minutemen": "Massachusetts",
+ "UL Monroe Warhawks": "Louisiana Monroe",
+ "Morehead St Eagles": "Morehead State",
+ "Tenn-Martin Skyhawks": "Tennessee-Martin",
+ "Portland St Vikings": "Portland State",
+ "Jacksonville St Gamecocks": "Jacksonville State",
+ "North Dakota St Bison": "North Dakota State",
+ "Texas A&M-CC Islanders": "Texas A&M-Corpus Christi"
 }
 
 NCAA_NAMES = {
@@ -57,13 +64,17 @@ SCHEDULE_NAMES = {
     'UT San Antonio': 'UTSA',
     'UMass': 'Massachusetts',
     "Hawai'i": 'Hawaii',
-    'Florida Intl': 'FIU'
+    'Florida Intl': 'FIU',
+    "UL Monroe": "Louisiana Monroe",
+    "Tenn-Martin": "Tennessee-Martin",
+    "Texas A&M-CC": "Texas A&M-Corpus Christi"
 }
 
 def find_match(name, dictionary):
     """For use with PERFORMANCE_NAMES."""
     if name == '':
-        raise "Didn't find name"
+        # raise "Didn't find name"
+        return False
     search_name = (' ').join(name.split(' ')[:-1])
     if search_name in dictionary:
         return search_name
@@ -80,4 +91,7 @@ def translate_ncaa_name(name):
     return generic_translation(name, NCAA_NAMES)
 
 def translate_schedule_name(name):
-    return generic_translation(name, SCHEDULE_NAMES)
+    if name.endswith("St"):
+        return name + "ate"
+    else:
+        return generic_translation(name, SCHEDULE_NAMES)
