@@ -1,3 +1,12 @@
+import os
+import sys
+
+LOCAL_PATH = os.path.dirname(__file__)
+ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-3])
+sys.path.append(ROOT_PATH)
+
+from models.helpers.constructor import build_instance
+
 class Team:
 
     @classmethod

@@ -5,7 +5,7 @@ LOCAL_PATH = os.path.dirname(__file__)
 ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-3])
 sys.path.append(ROOT_PATH)
 
-from models.helpers.constructor import build_instance
+from models.helpers.constructor import build_instance, build_set_from_file
 
 class Conference:
     SOURCE_COLUMNS = [
@@ -15,17 +15,7 @@ class Conference:
 
     @classmethod
     def build_all_from(cls, sourcefile):
-        conferences = {}
-        with open(sourcefile, 'r') as f:
-            for line in f:
-                conference = Conference.create_from(line)
-                conferences[conference.id] = conference
-        return conferences
-
-    @classmethod
-    def create_from(cls, line):
-        columns = line.strip().split(',')
-        return Conference(columns)
+        return build_set_from_file(cls, sourcefile)
 
     def __init__(self, data):
         build_instance(self, self.SOURCE_COLUMNS, data)

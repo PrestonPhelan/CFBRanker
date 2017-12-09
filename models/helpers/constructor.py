@@ -1,3 +1,12 @@
+def build_set_from_file(cls, sourcefile):
+    items = {}
+    with open(sourcefile, 'r') as f:
+        for line in f:
+            columns = line.strip().split(',')
+            item = cls(columns)
+            items[item.id] = item
+    return items
+
 def build_instance(self, attribute_list, data):
     # Takes in a list of column names and values for those columns,
     # saves as attributes on a class instance
