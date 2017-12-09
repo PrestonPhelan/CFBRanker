@@ -1,5 +1,5 @@
 import os, sys
-from processing.team import Team
+from models.team import Team
 from processing.readers import *
 from processing.builders import *
 from constants.name_translations import *

@@ -6,8 +6,8 @@ from scipy.stats import norm
 
 from constants.name_translations import translate_ncaa_name, translate_schedule_name
 from processing.builders import build_filename_format
-from processing.game import Game
-from processing.team import Team
+from models.game import Game
+from models.team import Team
 from settings import CURRENT_WEEK
 
 ESTIMATE_LOCATION_COEFF = False
