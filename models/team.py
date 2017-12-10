@@ -8,6 +8,11 @@ sys.path.append(ROOT_PATH)
 from models.helpers.constructor import build_instance
 
 class Team:
+    SOURCE_COLUMNS = [
+        'name', 'scrape_id', 'fb_scrape_name', 'bb_scrape_name',
+        'schedule_name', 'flair', 'fb_level', 'fb_conference_id',
+        'bb_conference_id'
+    ]
 
     @classmethod
     def build_teams_from_file(cls, sourcefile):

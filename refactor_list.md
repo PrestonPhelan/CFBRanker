@@ -1,4 +1,6 @@
-IN constants
+IN constants:
+  conferences
+  teams
 
 IN models:
   conference
