@@ -1,13 +1,25 @@
+import os
+import sys
+
+LOCAL_PATH = os.path.dirname(__file__)
+ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-1])
+sys.path.append(ROOT_PATH)
+
+from models.helpers.read_schedule import read_schedule
+from processing.builders import build_filename_format
+from settings import SCHEDULE_GENERIC_PATH
+from string_constants import *
+
 class Game:
 
     def __init__(self, details):
-        self.location = details['location']
-        self.opponent = details['opponent']
-        self.result = details['result']
-        self.own_score = details['own_score']
-        self.opp_score = details['opp_score']
-        self.overtime = details['overtime']
-        self.num_overtimes = details['num_overtimes']
+        self.location = details[GAME_LOCATION]
+        self.opponent = details[GAME_OPPONENT]
+        self.result = details[GAME_RESULT]
+        self.own_score = details[GAME_OWN_SCORE]
+        self.opp_score = details[GAME_OPP_SCORE]
+        self.overtime = details[GAME_OVERTIME]
+        self.num_overtimes = details[GAME_NUM_OTS]
 
     def __str__(self):
         string_to_print = "%(location)s vs. %(opponent)s, %(result)s %(own_score)s-%(opp_score)s" % {

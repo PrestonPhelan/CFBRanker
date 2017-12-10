@@ -1,10 +1,10 @@
-def build_set_from_file(cls, sourcefile, fb_filter_idx=None):
+def build_set_from_file(cls, sourcefile, football=False, fb_filter_idx=None):
     # Generic build set of objects from a file of objects
     items = {}
     with open(sourcefile, 'r') as f:
         for line in f:
             columns = line.strip().split(',')
-            if fb_filter_idx and columns[fb_filter_idx] == "None":
+            if football and columns[fb_filter_idx] == "None":
                 continue
             item = cls(columns)
             items[item.id] = item

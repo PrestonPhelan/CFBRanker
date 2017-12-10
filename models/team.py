@@ -6,8 +6,12 @@ ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-1])
 sys.path.append(ROOT_PATH)
 
 from models.conference import Conference
+from models.game import Game
 from models.helpers.constructor import build_instance, build_set_from_file
-from settings import TEAM_PATH, FB_LEVEL
+from models.helpers.read_schedule import read_schedule
+from processing.builders import build_filename_format
+from string_constants import FB_LEVEL, SPORT_FOOTBALL
+from settings import SCHEDULE_GENERIC_PATH, TEAM_PATH
 
 class Team:
     TEAM_SOURCE = TEAM_PATH % ROOT_PATH
@@ -23,6 +27,7 @@ class Team:
         teams = build_set_from_file(
             cls,
             cls.TEAM_SOURCE,
+            football=football,
             fb_filter_idx=cls.SOURCE_COLUMNS.index(FB_LEVEL))
         for team in teams.values():
             if football:
@@ -32,6 +37,26 @@ class Team:
             else:
                 team.conference = conferences[team.bb_conference_id]
         return teams
+
+    @classmethod
+    def build_all_by_schedule_name(cls, teams_by_id=None, football=False):
+        if not teams_by_id:
+            teams_by_id = Team.build_all(football=football)
+        teams_by_schedule_name = {}
+        for team in teams_by_id.values():
+            teams_by_schedule_name[team.schedule_name] = team
+        return teams_by_schedule_name
+
+    @classmethod
+    def build_all_with_games(cls, sport):
+        SCHEDULE_PATH = SCHEDULE_GENERIC_PATH % (ROOT_PATH, sport)
+        football = sport == SPORT_FOOTBALL
+        teams_by_id = Team.build_all(football=football)
+        teams_by_schedule_name = Team.build_all_by_schedule_name(teams_by_id=teams_by_id, football=football)
+        teams = teams_by_id.values()
+        for team in teams:
+            team.add_all_games(SCHEDULE_PATH, teams_by_schedule_name)
+        return teams_by_id
 
     @classmethod
     def set_last_week(cls, last_week_data, teams):
@@ -49,9 +74,19 @@ class Team:
     def __init__(self, data):
         build_instance(self, self.SOURCE_COLUMNS, data)
         self.conference = None
+        self.games = []
 
     def __str__(self):
         return self.name
+
+    def add_all_games(self, schedule_path, teams_by_schedule_name):
+        filename_format_name = build_filename_format(self.name)
+        schedule_source = schedule_path + filename_format_name + ".csv"
+        with open(schedule_source, 'r') as read_file:
+            for line in read_file:
+                game_data = read_schedule(line, teams_by_schedule_name)
+                if game_data:
+                    self.games.append(Game(game_data))
 
     # def set_power_mean(self, rating):
     #     self.power_mean = rating

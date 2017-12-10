@@ -12,6 +12,7 @@ sys.path.append(ROOT_PATH)
 
 import scrapy
 
+from string_constants import UNPLAYED_INDICATOR
 from settings import CURRENT_WEEK, TEAM_PATH
 from constants.name_translations import PERFORMANCE_NAMES, SCHEDULE_NAMES, find_match
 from processing.builders import build_filename_format
@@ -30,7 +31,7 @@ TEAM_SOURCE = TEAM_PATH % ROOT_PATH
 # Other Constants
 RESULT_KEY = 'results'
 SCORE_KEY = 'scores'
-UNPLAYED_RESULT_STRING = "--,--"
+UNPLAYED_RESULT_STRING = ",".join([UNPLAYED_INDICATOR] * 2)
 
 # Helper Methods
 def extract_locations(response):
