@@ -1,6 +1,6 @@
 import numpy
 import os
-root_path = os.path.dirname(os.path.abspath(__file__))
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 from scipy.stats import norm
 
@@ -20,7 +20,7 @@ RATING_RANGE_LOW = 15
 RESULTS_EMPHASIZED_RATING_CONSTANT = 7
 RESULTS_EMPHASIZED_RATING_COEFFICIENT = 0.5
 
-GAME_STD = 16.0
+GAME_STD = 14.2
 RATINGS_STD = 14.0
 
 NUM_SIMS = 10000
@@ -200,10 +200,10 @@ def calculate_actual_results_probability(team, rating):
 
 ### GET INPUT DATA ###
 # Create team objects
-team_list_source = "%s/constants/names.txt" % root_path
+team_list_source = "%s/constants/names.txt" % ROOT_PATH
 teams = Team.build_teams_from_file(team_list_source)
 
-records_source = "%s/output/standings-week%s.csv" % (root_path, CURRENT_WEEK)
+records_source = "%s/output/standings-week%s.csv" % (ROOT_PATH, CURRENT_WEEK)
 with open(records_source) as f:
     for line in f:
         name, record = line.strip().split(",")
@@ -211,7 +211,7 @@ with open(records_source) as f:
         teams[name].record = record
 
 # Create game objects
-schedule_root = '%s/output/schedules/' % root_path
+schedule_root = '%s/output/football/schedules/' % ROOT_PATH
 idx = 0
 for name, team in teams.items():
     team.id = idx
@@ -222,10 +222,10 @@ for name, team in teams.items():
         for line in f:
             # Read schedule data
             columns = line.strip().split(",")
-            if columns[2] == 'False':
-                continue
-            location, opponent, _, result, score = columns
+            location, opponent, result, score = columns
 
+            if result == "--":
+                continue
             opponent = translate_schedule_name(opponent)
             if opponent not in teams:
                 print('Skipped %s' % opponent)
@@ -359,11 +359,11 @@ for team in list(teams.values()):
 
 total_sse = float(total_sse) / 2.0
 total_games = float(total_games) / 2.0
-OVERALL_STD = numpy.sqrt(total_sse / (total_games - 1))
+OVERALL_STD = numpy.sqrt(total_sse / (total_games - (NUM_TEAMS - 1)))
 print("OVERALL STDEV")
 print(OVERALL_STD)
 sorted_teams = sorted(list(teams.values()), key=lambda team: team.ratings['pure_points'], reverse=True)
-output_file = '%s/output/custom-power-week%s.csv' % (root_path, CURRENT_WEEK)
+output_file = '%s/output/custom-power-week%s.csv' % (ROOT_PATH, CURRENT_WEEK)
 with open(output_file, 'w+') as f:
     for idx, team in enumerate(sorted_teams):
         f.write('%(rank)s,%(name)s,%(rating)s,%(offense)s,%(defense)s,%(std)s\n' % {
@@ -401,7 +401,7 @@ for idx, team in enumerate(sorted(list(teams.values()), key=lambda team: team.ra
 # WRITE SCHEDULE RATING FILES
 for team in list(teams.values()):
     filename_format_name = build_filename_format(team.name)
-    write_file = '%s/output/reddit_schedules/%s.txt' % (root_path, filename_format_name)
+    write_file = '%s/output/football/reddit_schedules/%s.txt' % (ROOT_PATH, filename_format_name)
     with open(write_file, 'w+') as f:
         label_string = team.name + "(%s)" % team.record
         columns = ["Opponent", "Rec", "Loc", "Difficulty", "Result", "Score", "Game Rating"]
@@ -481,7 +481,7 @@ for idx, team in enumerate(sorted(list(teams.values()), key=lambda team: team.ra
         round(buckets['TOP100'], 4),
         round(buckets['BOTTOM30'], 4)))
 
-bucket_sor_file = "%s/output/bucket-sor-week%s.csv" % (root_path, CURRENT_WEEK)
+bucket_sor_file = "%s/output/bucket-sor-week%s.csv" % (ROOT_PATH, CURRENT_WEEK)
 with open(bucket_sor_file, "w+") as f:
     for idx, team in enumerate(sorted(list(teams.values()), key=lambda team: team.ratings['sor_buckets']['CFB'], reverse=True)):
         buckets = team.ratings['sor_buckets']
@@ -565,7 +565,7 @@ def generate_result_line(rank, team, rank_set):
         'BOTTOM': team.rankings['BOTTOM30']
     }
 
-final_source = "%s/output/custom-combined-week%s.csv" % (root_path, CURRENT_WEEK)
+final_source = "%s/output/custom-combined-week%s.csv" % (ROOT_PATH, CURRENT_WEEK)
 ranking_buckets = ['CFB', 'NY6', 'TOP25', 'TOP50', 'TOP75', 'TOP100', 'BOTTOM30']
 breakpoints = [4, 12, 25, 50, 75, 100]
 with open(final_source, 'w+') as f:

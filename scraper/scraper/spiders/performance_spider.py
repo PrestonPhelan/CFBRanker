@@ -12,7 +12,7 @@ sys.path.append(ROOT_PATH)
 
 import scrapy
 
-from settings import CURRENT_WEEK
+from settings import CURRENT_WEEK, TEAM_PATH
 from constants.name_translations import PERFORMANCE_NAMES, SCHEDULE_NAMES, find_match
 from processing.builders import build_filename_format
 
@@ -20,12 +20,12 @@ from processing.builders import build_filename_format
 WAIT_BETWEEN_CALLS = False
 SECONDS_BETWEEN_CALLS = 0.5
 
-# Local Source Files
-TEAM_SOURCE = "%s/constants/teams.csv" % ROOT_PATH
-
 # Web Base URLs
 FB_BASE_URL = 'https://www.espn.com/college-football/team/fpi/_/id/'
 BB_BASE_URL = "https://www.espn.com/mens-college-basketball/team/schedule/_/id/"
+
+# Local sources
+TEAM_SOURCE = TEAM_PATH % ROOT_PATH
 
 # Other Constants
 RESULT_KEY = 'results'
@@ -74,7 +74,7 @@ class MothershipSpider(scrapy.Spider):
 
     def start_requests(self):
         self._build_standard_name_object()
-        requests = self._yield_requests_from_file(self.base_url, self.fb)
+        requests = self._yield_requests_from_file(self.BASE_URL, self.FOOTBALL)
         for request in requests:
             yield request
 
@@ -102,7 +102,7 @@ class MothershipSpider(scrapy.Spider):
         # param @standard_name: string, standardized name
         # Output: string, file path to csv file created from standardized name to filname convention
         filename_format_name = build_filename_format(standard_name) + '.csv'
-        return self.write_directory + filename_format_name
+        return self.WRITE_DIRECTORY + filename_format_name
 
     def _build_standard_name_object(self):
         # Get all needed standard names from constant file(s)
@@ -128,20 +128,15 @@ class MothershipSpider(scrapy.Spider):
 
 class FBScheduleSpider(MothershipSpider):
     name = "fb_schedules"
-    write_directory = '%s/output/football/schedules/' % ROOT_PATH
-    base_url = FB_BASE_URL
-    fb = True
-
-    def _extract_game_played(self, response):
-        # Accounts for cancelled games
-        game_scores = response.css(".tablehead tr:last-of-type .tablehead tr[class$='row'] td:last-of-type::text").extract()
-        return map(lambda score: score != u'--', game_scores)
+    WRITE_DIRECTORY = '%s/output/football/schedules/' % ROOT_PATH
+    BASE_URL = FB_BASE_URL
+    FOOTBALL = True
 
 class BBScheduleSpider(MothershipSpider):
     name = "bb_schedules"
-    write_directory = '%s/output/basketball/schedules/' % ROOT_PATH
-    base_url = BB_BASE_URL
-    fb = False
+    WRITE_DIRECTORY = '%s/output/basketball/schedules/' % ROOT_PATH
+    BASE_URL = BB_BASE_URL
+    FOOTBALL = False
 
 # DEPRECATED
 # class PerformanceSpider(MothershipSpider):

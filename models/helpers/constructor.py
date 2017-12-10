@@ -1,9 +1,11 @@
-def build_set_from_file(cls, sourcefile):
+def build_set_from_file(cls, sourcefile, fb_filter_idx=None):
     # Generic build set of objects from a file of objects
     items = {}
     with open(sourcefile, 'r') as f:
         for line in f:
             columns = line.strip().split(',')
+            if fb_filter_idx and columns[fb_filter_idx] == "None":
+                continue
             item = cls(columns)
             items[item.id] = item
     return items
@@ -21,4 +23,4 @@ def build_command_for(attr_name, item):
     if item == "None" or item[0].isdigit():
         return "self.%s = %s" % (attr_name, item)
     else:
-        return "self.%s = '%s'" % (attr_name, item)
+        return "self.%s = \"%s\"" % (attr_name, item)

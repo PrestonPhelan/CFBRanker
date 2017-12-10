@@ -1,5 +1,8 @@
 import os
 
-ROOT_DIR = os.path.abspath('.')
+CURRENT_WEEK = 16
 
-CURRENT_WEEK = 15
+CONFERENCE_PATH = "%s/constants/conferences.csv"
+TEAM_PATH = "%s/constants/teams.csv"
+
+FB_LEVEL = 'fb_level'
