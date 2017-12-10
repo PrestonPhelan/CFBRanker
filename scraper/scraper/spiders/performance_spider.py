@@ -13,7 +13,7 @@ sys.path.append(ROOT_PATH)
 import scrapy
 
 from settings import CURRENT_WEEK
-from constants.name_translations import PERFORMANCE_NAMES, find_match
+from constants.name_translations import PERFORMANCE_NAMES, SCHEDULE_NAMES, find_match
 from processing.builders import build_filename_format
 
 # Spider Settings
@@ -183,6 +183,8 @@ class BBScheduleSpider(MothershipSpider):
                 line = ",".join([location, opponent, result_string]) + "\n"
                 f.write(line)
 
+
+
 # DEPRECATED
 class PerformanceSpider(MothershipSpider):
     name = "performance_ratings"
@@ -200,3 +202,103 @@ class PerformanceSpider(MothershipSpider):
     def _get_rank_from_row(self, row):
         split = row.split(' ')
         return split[1][1:-1]
+
+
+class TeamSpider(BBScheduleSpider):
+    ## One time use to build team data
+    name = "teams_collect"
+    write_file = '%s/constants/teams.csv' % ROOT_PATH
+
+    REDDIT_NAMES = {
+    # Unlike others above, this dictionary has keys that
+    # are the standard names, and translates for output
+    # in reddit flairs
+    'East Carolina': '[ECU](#f/eastcarolina)',
+    'Florida Atlantic': '[FAU](#f/fau)',
+    'Hawaii': "[Hawai'i](#f/hawaii)",
+    'Louisiana Monroe': "[ULM](#f/ulm)",
+    'Massachusetts': "[UMass](#f/umass)",
+    'Miami (OH)': "[Miami (OH)](#f/miamioh)",
+    'South Florida': "[USF](#f/usf)",
+    'Texas A&M': "[Texas A&M](#f/texasam)",
+    'Western Kentucky': "[WKU](#f/wku)"
+    }
+
+    fb_ids = set()
+    with open(FB_ID_SOURCE) as f:
+        for line in f:
+            fb_ids.add(line.strip())
+
+    fb_conferences = {}
+    with open('%s/constants/names.txt' % ROOT_PATH) as f:
+        for line in f:
+            team_name, conference = line.strip().split(',')
+            fb_conferences[team_name] = conference
+
+    bb_conferences = {}
+    with open('%s/constants/bb_names.txt' % ROOT_PATH) as f:
+        for line in f:
+            team_name, conference = line.strip().split(',')
+            bb_conferences[team_name] = conference
+
+    conf_by_abbrev = {}
+    conf_by_display_name = {}
+    with open('%s/constants/conferences.csv' % ROOT_PATH) as f:
+        for line in f:
+            conf_id, _, display_name, short_name, _, _ = line.strip().split(',')
+            conf_by_abbrev[short_name] = conf_id
+            conf_by_display_name[short_name] = conf_id
+
+    def parse(self, response):
+        scrape_name = response.css("h2 a b::text").extract()[0]
+        scrape_id = response.url.split("/")[-1]
+        standard_name = self._convert_to_standard_name(scrape_name)
+        schedule_name = None
+        for sch_name, std_name in SCHEDULE_NAMES.items():
+            if std_name == standard_name:
+                schedule_name = sch_name
+        if schedule_name is None:
+            schedule_name = standard_name
+        flair_string = None
+        if standard_name in self.REDDIT_NAMES:
+            flair_string = self.REDDIT_NAMES[standard_name]
+        else:
+            combo_string = ''
+            for character in standard_name:
+                if character.isalpha():
+                    combo_string += character.lower()
+            flair_string = "[%s](#f/%s)" % (standard_name, combo_string)
+        if scrape_id in self.fb_ids:
+            football_level = "FBS"
+        else:
+            football_level = "FCS"
+        fb_conf_id = None
+        bb_conf_id = None
+        if standard_name in self.fb_conferences:
+            fb_written_conf = self.fb_conferences[standard_name]
+            if standard_name not in self.bb_conferences:
+                bb_written_conf = self.fb_conferences[standard_name]
+            else:
+                bb_written_conf = self.bb_conferences[standard_name]
+        else:
+            fb_written_conf = self.bb_conferences[standard_name]
+            bb_written_conf = self.bb_conferences[standard_name]
+        if fb_written_conf in self.conf_by_abbrev:
+            fb_conf_id = self.conf_by_abbrev[fb_written_conf]
+        elif fb_written_conf in self.conf_by_display_name:
+            fb_conf_id = self.conf_by_display_name[fb_written_conf]
+        if fb_written_conf == bb_written_conf:
+            bb_conf_id = fb_conf_id
+        else:
+            if bb_written_conf in self.conf_by_abbrev:
+                bb_conf_id = self.conf_by_abbrev[bb_written_conf]
+            elif bb_written_conf in self.conf_by_display_name:
+                bb_conf_id = self.conf_by_display_name[bb_written_conf]
+
+        if fb_conf_id is None:
+            fb_conf_id = "MISSING"
+        if bb_conf_id is None:
+            bb_conf_id = "MISSING"
+        items = [standard_name, scrape_id, scrape_name, schedule_name, flair_string, football_level, fb_conf_id, bb_conf_id]
+        with open(self.write_file, 'a+') as f:
+            f.write(",".join(items) + '\n')
