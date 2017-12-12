@@ -11,7 +11,7 @@ from models.helpers.constructor import build_instance, build_set_from_file
 from models.helpers.read_schedule import read_schedule
 from processing.builders import build_filename_format
 from string_constants import *
-from settings import SCHEDULE_GENERIC_PATH, TEAM_PATH
+from settings import SCHEDULE_GENERIC_PATH, TEAM_PATH, COMPOSITE_RATING_INCLUDES_PURE_POINTS
 
 class Team:
     TEAM_SOURCE = TEAM_PATH % ROOT_PATH
@@ -135,8 +135,10 @@ class Team:
 
     def composite_rating(self):
         metrics = [
-            self.ratings[RATINGS_PURE_POINTS], self.ratings[RATINGS_PURE_POINTS_ADJUSTED],
+            self.ratings[RATINGS_PURE_POINTS_ADJUSTED],
             self.ratings[RATINGS_SOR_WA], self.ratings[RATINGS_SOR_MLE]]
+        if COMPOSITE_RATING_INCLUDES_PURE_POINTS:
+            metrics.append(self.ratings[RATINGS_PURE_POINTS])
         return sum(metrics) / float(len(metrics))
 
     # def set_power_mean(self, rating):

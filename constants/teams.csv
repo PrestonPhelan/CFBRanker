@@ -32,7 +32,7 @@
 32,Bucknell,2083,Bucknell Bison,Bucknell Bison,Bucknell,[Bucknell](#f/bucknell),FCS,20,20
 33,Buffalo,2084,Buffalo Bulls,Buffalo Bulls,Buffalo,[Buffalo](#f/buffalo),FBS,7,7
 34,Butler,2086,Butler Bulldogs,Butler Bulldogs,Butler,[Butler](#f/butler),FCS,21,28
-35,CS Fullerton,2239,CS Fullerton Titans,CS Fullerton Titans,CS Fullerton,[CS Fullerton](#f/csfullerton),None,None,29
+35,CS Fullerton,2239,CS Fullerton Titans,CS Fullerton Titans,CS Fullerton,[CSU Fullerton](#f/csufullerton),None,None,29
 36,CSU Bakersfield,2934,CSU Bakersfield Roadrunners,CSU Bakersfield Roadrunners,CSU Bakersfield,[CSU Bakersfield](#f/csubakersfield),None,None,34
 37,CSU Northridge,2463,CSU Northridge Matadors,CSU Northridge Matadors,CSU Northridge,[CSU Northridge](#f/csunorthridge),None,None,29
 38,Cal Poly,13,Cal Poly Mustangs,Cal Poly Mustangs,Cal Poly,[Cal Poly](#f/calpoly),FCS,12,29
@@ -40,7 +40,7 @@
 40,Campbell,2097,Campbell Fighting Camels,Campbell Fighting Camels,Campbell,[Campbell](#f/campbell),FCS,21,13
 41,Canisius,2099,Canisius Golden Griffins,Canisius Golden Griffins,Canisius,[Canisius](#f/canisius),None,None,31
 42,Central Arkansas,2110,Central Arkansas Bears,Central Arkansas Bears,Central Arkansas,[Central Arkansas](#f/centralarkansas),FCS,23,23
-43,Central Connecticut,2115,Central Connecticut Blue Devils,Central Connecticut Blue Devils,Central Connecticut,[Central Connecticut](#f/centralconnecticut),FCS,18,18
+43,Central Connecticut,2115,Central Connecticut Blue Devils,Central Connecticut Blue Devils,Central Connecticut,[Central Connecticut](#f/centralconnecticutstate),FCS,18,18
 44,Central Michigan,2117,Central Michigan Chippewas,Central Michigan Chippewas,Central Michigan,[Central Michigan](#f/centralmichigan),FBS,7,7
 45,Charleston Southern,2127,Charleston Southern Buccaneers,Charleston Southern Buccaneers,Charleston Southern,[Charleston Southern](#f/charlestonsouthern),FCS,13,13
 46,Charleston,232,Charleston Cougars,Charleston Cougars,Charleston,[Charleston](#f/charleston),None,None,14
@@ -100,7 +100,7 @@
 100,Georgia Tech,59,Georgia Tech Yellow Jackets,Georgia Tech Yellow Jackets,Georgia Tech,[Georgia Tech](#f/georgiatech),FBS,1,1
 101,Georgia,61,Georgia Bulldogs,Georgia Bulldogs,Georgia,[Georgia](#f/georgia),FBS,10,10
 102,Gonzaga,2250,Gonzaga Bulldogs,Gonzaga Bulldogs,Gonzaga,[Gonzaga](#f/gonzaga),None,None,33
-103,Grambling,2755,Grambling Tigers,Grambling Tigers,Grambling,[Grambling](#f/grambling),FCS,24,24
+103,Grambling,2755,Grambling Tigers,Grambling Tigers,Grambling,[Grambling State](#f/gramblingstate),FCS,24,24
 104,Grand Canyon,2253,Grand Canyon Antelopes,Grand Canyon Antelopes,Grand Canyon,[Grand Canyon](#f/grandcanyon),None,None,34
 105,Green Bay,2739,Green Bay Phoenix,Green Bay Phoenix,Green Bay,[Green Bay](#f/greenbay),None,None,30
 106,Hampton,2261,Hampton Pirates,Hampton Pirates,Hampton,[Hampton](#f/hampton),FCS,16,16
@@ -130,10 +130,10 @@
 130,James Madison,256,James Madison Dukes,James Madison Dukes,James Madison,[James Madison](#f/jamesmadison),FCS,14,14
 131,Kansas State,2306,Kansas State Wildcats,Kansas State Wildcats,Kansas State,[Kansas State](#f/kansasstate),FBS,3,3
 132,Kansas,2305,Kansas Jayhawks,Kansas Jayhawks,Kansas,[Kansas](#f/kansas),FBS,3,3
-133,Kennesaw State,338,Kennesaw State Owls,Kennesaw State Owls,Kennesaw State,[Kennesaw State](#f/kennesawstate),FCS,13,26
+133,Kennesaw State,338,Kennesaw State Owls,Kennesaw State Owls,Kennesaw State,[Kennesaw State](#f/kennesaw),FCS,13,26
 134,Kent State,2309,Kent State Golden Flashes,Kent State Golden Flashes,Kent State,[Kent State](#f/kentstate),FBS,7,7
 135,Kentucky,96,Kentucky Wildcats,Kentucky Wildcats,Kentucky,[Kentucky](#f/kentucky),FBS,10,10
-136,LIU Brooklyn,2341,LIU Brooklyn Blackbirds,LIU Brooklyn Blackbirds,LIU Brooklyn,[LIU Brooklyn](#f/liubrooklyn),None,None,18
+136,LIU Brooklyn,2341,LIU Brooklyn Blackbirds,LIU Brooklyn Blackbirds,LIU Brooklyn,[Long Island](#f/longisland),None,None,18
 137,LSU,99,LSU Tigers,LSU Tigers,LSU,[LSU](#f/lsu),FBS,10,10
 138,La Salle,2325,La Salle Explorers,La Salle Explorers,La Salle,[La Salle](#f/lasalle),None,None,27
 139,Lafayette,322,Lafayette Leopards,Lafayette Leopards,Lafayette,[Lafayette](#f/lafayette),FCS,20,20
@@ -141,8 +141,8 @@
 141,Lehigh,2329,Lehigh Mountain Hawks,Lehigh Mountain Hawks,Lehigh,[Lehigh](#f/lehigh),FCS,20,20
 142,Liberty,2335,Liberty Flames,Liberty Flames,Liberty,[Liberty](#f/liberty),FCS,13,13
 143,Lipscomb,288,Lipscomb Bisons,Lipscomb Bisons,Lipscomb,[Lipscomb](#f/lipscomb),None,None,26
-144,Little Rock,2031,Little Rock Trojans,Little Rock Trojans,Little Rock,[Little Rock](#f/littlerock),None,None,11
-145,Long Beach State,299,Long Beach State 49ers,Long Beach State 49ers,Long Beach State,[Long Beach State](#f/longbeachstate),None,None,29
+144,Little Rock,2031,Little Rock Trojans,Little Rock Trojans,Little Rock,[Little Rock](#f/ualr),None,None,11
+145,Long Beach State,299,Long Beach State 49ers,Long Beach State 49ers,Long Beach State,[Long Beach State](#f/csulongbeach),None,None,29
 146,Longwood,2344,Longwood Lancers,Longwood Lancers,Longwood,[Longwood](#f/longwood),None,None,13
 147,Louisiana Monroe,2433,UL Monroe Warhawks,UL Monroe Warhawks,UL Monroe,[ULM](#f/ulm),FBS,11,11
 148,Louisiana Tech,2348,Louisiana Tech Bulldogs,Louisiana Tech Bulldogs,Louisiana Tech,[Louisiana Tech](#f/louisianatech),FBS,5,5
@@ -193,7 +193,7 @@
 193,Nicholls,2447,Nicholls Colonels,Nicholls Colonels,Nicholls,[Nicholls](#f/nicholls),FCS,23,23
 194,Norfolk State,2450,Norfolk State Spartans,Norfolk State Spartans,Norfolk State,[Norfolk State](#f/norfolkstate),FCS,16,16
 195,North Carolina A&T,2448,North Carolina A&T Aggies,North Carolina A&T Aggies,North Carolina A&T,[North Carolina A&T](#f/northcarolinaat),FCS,16,16
-196,North Carolina Central,2428,North Carolina Central Eagles,North Carolina Central Eagles,North Carolina Central,[North Carolina Central](#f/northcarolinacentral),FCS,16,16
+196,North Carolina Central,2428,North Carolina Central Eagles,North Carolina Central Eagles,North Carolina Central,	[North Carolina Central](#f/nccentral),FCS,16,16
 197,North Carolina,153,North Carolina Tar Heels,North Carolina Tar Heels,North Carolina,[North Carolina](#f/northcarolina),FBS,1,1
 198,North Dakota State,2449,North Dakota State Bison,North Dakota State Bison,North Dakota State,[North Dakota State](#f/northdakotastate),FCS,17,32
 199,North Dakota,155,North Dakota Fighting Hawks,North Dakota Fighting Hawks,North Dakota,[North Dakota](#f/northdakota),FCS,12,12
@@ -239,15 +239,15 @@
 239,Rider,2520,Rider Broncs,Rider Broncs,Rider,[Rider](#f/rider),None,None,31
 240,Robert Morris,2523,Robert Morris Colonials,Robert Morris Colonials,Robert Morris,[Robert Morris](#f/robertmorris),FCS,18,18
 241,Rutgers,164,Rutgers Scarlet Knights,Rutgers Scarlet Knights,Rutgers,[Rutgers](#f/rutgers),FBS,4,4
-242,SE Louisiana,2545,SE Louisiana Lions,SE Louisiana Lions,SE Louisiana,[SE Louisiana](#f/selouisiana),FCS,23,23
-243,SIU-Edwardsville,2565,SIU-Edwardsville Cougars,SIU-Edwardsville Cougars,SIU-Edwardsville,[SIU-Edwardsville](#f/siuedwardsville),None,None,19
+242,SE Louisiana,2545,SE Louisiana Lions,SE Louisiana Lions,SE Louisiana,[Southeastern Louisiana](#f/southeasternlouisiana),FCS,23,23
+243,SIU-Edwardsville,2565,SIU-Edwardsville Cougars,SIU-Edwardsville Cougars,SIU-Edwardsville,[SIUE](#f/siue),None,None,19
 244,SMU,2567,SMU Mustangs,SMU Mustangs,SMU,[SMU](#f/smu),FBS,2,2
 245,Sacramento State,16,Sacramento State Hornets,Sacramento State Hornets,Sacramento State,[Sacramento State](#f/sacramentostate),FCS,12,12
 246,Sacred Heart,2529,Sacred Heart Pioneers,Sacred Heart Pioneers,Sacred Heart,[Sacred Heart](#f/sacredheart),FCS,18,18
-247,Saint Joseph's,2603,Saint Joseph's Hawks,Saint Joseph's Hawks,Saint Joseph's,[Saint Joseph's](#f/saintjosephs),None,None,27
+247,Saint Joseph's,2603,Saint Joseph's Hawks,Saint Joseph's Hawks,Saint Joseph's,[St. Joseph's (PA)](#f/stjosephspa),None,None,27
 248,Saint Louis,139,Saint Louis Billikens,Saint Louis Billikens,Saint Louis,[Saint Louis](#f/saintlouis),None,None,27
-249,Saint Mary's,2608,Saint Mary's Gaels,Saint Mary's Gaels,Saint Mary's,[Saint Mary's](#f/saintmarys),None,None,33
-250,Saint Peter's,2612,Saint Peter's Peacocks,Saint Peter's Peacocks,Saint Peter's,[Saint Peter's](#f/saintpeters),None,None,31
+249,Saint Mary's,2608,Saint Mary's Gaels,Saint Mary's Gaels,Saint Mary's,[St. Mary's (CA)](#f/stmarys),None,None,33
+250,Saint Peter's,2612,Saint Peter's Peacocks,Saint Peter's Peacocks,Saint Peter's,[St. Peter's](#f/stpeters),None,None,31
 251,Sam Houston State,2534,Sam Houston State Bearkats,Sam Houston State Bearkats,Sam Houston State,[Sam Houston State](#f/samhoustonstate),FCS,23,23
 252,Samford,2535,Samford Bulldogs,Samford Bulldogs,Samford,[Samford](#f/samford),FCS,22,22
 253,San Diego State,21,San Diego State Aztecs,San Diego State Aztecs,San Diego State,[San Diego State](#f/sandiegostate),FBS,8,8
@@ -272,9 +272,9 @@
 272,Southern Utah,253,Southern Utah Thunderbirds,Southern Utah Thunderbirds,Southern Utah,[Southern Utah](#f/southernutah),FCS,12,12
 273,Southern,2582,Southern Jaguars,Southern Jaguars,Southern,[Southern](#f/southern),FCS,24,24
 274,St. Bonaventure,179,St. Bonaventure Bonnies,St. Bonaventure Bonnies,St. Bonaventure,[St. Bonaventure](#f/stbonaventure),None,None,27
-275,St. Francis (BKN),2597,St. Francis (BKN) Terriers,St. Francis (BKN) Terriers,St. Francis (BKN),[St. Francis (BKN)](#f/stfrancisbkn),None,None,18
-276,St. Francis (PA),2598,St. Francis (PA) Red Flash,St. Francis (PA) Red Flash,St. Francis (PA),[St. Francis (PA)](#f/stfrancispa),FCS,18,18
-277,St. John's,2599,St. John's Red Storm,St. John's Red Storm,St. John's,[St. John's](#f/stjohns),None,None,28
+275,St. Francis (BKN),2597,St. Francis (BKN) Terriers,St. Francis (BKN) Terriers,St. Francis (BKN),[St. Francis Brooklyn](#f/stfrancisbrooklyn),None,None,18
+276,St. Francis (PA),2598,St. Francis (PA) Red Flash,St. Francis (PA) Red Flash,St. Francis (PA),[St. Francis](#f/stfrancis),FCS,18,18
+277,St. John's,2599,St. John's Red Storm,St. John's Red Storm,St. John's,[St. John's (NY)](#f/stjohnsny),None,None,28
 278,Stanford,24,Stanford Cardinal,Stanford Cardinal,Stanford,[Stanford](#f/stanford),FBS,9,9
 279,Stephen F. Austin,2617,Stephen F. Austin Lumberjacks,Stephen F. Austin Lumberjacks,Stephen F. Austin,[Stephen F. Austin](#f/stephenfaustin),FCS,23,23
 280,Stetson,56,Stetson Hatters,Stetson Hatters,Stetson,[Stetson](#f/stetson),FCS,21,26
@@ -308,14 +308,14 @@
 308,UIC,82,UIC Flames,UIC Flames,UIC,[UIC](#f/uic),None,None,30
 309,UMBC,2378,UMBC Retrievers,UMBC Retrievers,UMBC,[UMBC](#f/umbc),None,None,25
 310,UMKC,140,UMKC Kangaroos,UMKC Kangaroos,UMKC,[UMKC](#f/umkc),None,None,34
-311,UMass Lowell,2349,UMass Lowell River Hawks,UMass Lowell River Hawks,UMass Lowell,[UMass Lowell](#f/umasslowell),None,None,25
+311,UMass Lowell,2349,UMass Lowell River Hawks,UMass Lowell River Hawks,UMass Lowell,[UMass Lowell](#f/massachusettslowell),None,None,25
 312,UNC Asheville,2427,UNC Asheville Bulldogs,UNC Asheville Bulldogs,UNC Asheville,[UNC Asheville](#f/uncasheville),None,None,13
 313,UNC Greensboro,2430,UNC Greensboro Spartans,UNC Greensboro Spartans,UNC Greensboro,[UNC Greensboro](#f/uncgreensboro),None,None,22
 314,UNC Wilmington,350,UNC Wilmington Seahawks,UNC Wilmington Seahawks,UNC Wilmington,[UNC Wilmington](#f/uncwilmington),None,None,14
 315,UNLV,2439,UNLV Rebels,UNLV Rebels,UNLV,[UNLV](#f/unlv),FBS,8,8
 316,USC,30,USC Trojans,USC Trojans,USC,[USC](#f/usc),FBS,9,9
 317,UT Arlington,250,UT Arlington Mavericks,UT Arlington Mavericks,UT Arlington,[UT Arlington](#f/utarlington),None,None,11
-318,UT Rio Grande Valley,292,UT Rio Grande Valley Vaqueros,UT Rio Grande Valley Vaqueros,UT Rio Grande Valley,[UT Rio Grande Valley](#f/utriograndevalley),None,None,34
+318,UT Rio Grande Valley,292,UT Rio Grande Valley Vaqueros,UT Rio Grande Valley Vaqueros,UT Rio Grande Valley,[UTRGV](#f/texasriograndevalley),None,None,34
 319,UTEP,2638,UTEP Miners,UTEP Miners,UTEP,[UTEP](#f/utep),FBS,5,5
 320,UTSA,2636,UT San Antonio Roadrunners,UT San Antonio Roadrunners,UT San Antonio,[UTSA](#f/utsa),FBS,5,5
 321,Utah State,328,Utah State Aggies,Utah State Aggies,Utah State,[Utah State](#f/utahstate),FBS,8,8

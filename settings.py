@@ -13,9 +13,12 @@ CONFERENCE_PATH = "%s/constants/conferences.csv"
 TEAM_PATH = "%s/constants/teams.csv"
 SCHEDULE_GENERIC_PATH = "%s/output/%s/schedules/"
 PRETTY_SCHEDULE_GENERIC_PATH = "%s/output/%s/reddit_schedules/"
+COMPOSITE_GENERIC_PATH = "%s/output/%s/composite-week%s"
 
 OVERTIME_ADJUSTMENT = True
 NUM_SIMS = 10000
+
+COMPOSITE_RATING_INCLUDES_PURE_POINTS = False
 
 BB_OPTIONS = {
     OPTIONS_CURRENT_WEEK: 7,

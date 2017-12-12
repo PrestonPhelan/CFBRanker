@@ -224,7 +224,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient
             team.ratings[RATINGS_PURE_POINTS_ADJUSTED] = overall_adjusted
             overall_adjusted = round(overall_adjusted, 2)
 
-            name_with_flair = " ".join([team.flair, team.name])
+            name_with_flair = team.get_flair_with_name()
 
             if sport == SPORT_FOOTBALL:
                 conference_flair = team.conference.fb_flair

@@ -9,9 +9,10 @@ LOCAL_PATH = os.path.dirname(__file__)
 ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-1])
 sys.path.append(ROOT_PATH)
 
+from processing.builders import build_markdown_row, build_markdown_barrier
 from processing.game_helpers import calc_product, choose
 from processing.options_util import import_options
-from settings import NUM_SIMS
+from settings import NUM_SIMS, COMPOSITE_GENERIC_PATH
 from string_constants import *
 
 class SORCalculator:
@@ -23,6 +24,11 @@ class SORCalculator:
 
         options = import_options(sport)
         self.home_field_advantage = options[OPTIONS_HOME_FIELD_ADVANTAGE]
+        self.current_week = options[OPTIONS_CURRENT_WEEK]
+        composite_path = COMPOSITE_GENERIC_PATH % (ROOT_PATH, self.sport, self.current_week)
+        self.output_csv = composite_path + ".csv"
+        self.output_md = composite_path + ".md"
+
         self.calculate_sor_metrics()
 
     def estimate_rating_standard_deviation(self):
@@ -101,30 +107,94 @@ class SORCalculator:
         print ("Median was %s" % str(median(maximums)))
         return sum(maximums) / NUM_SIMS
 
+    def calculate_p_record_metrics(self):
+        est_best_rating = self.estimate_best_rating()
+
+        for idx, team in enumerate(self.team_list):
+            p_better, p_equal, p_worse = self.calculate_performance_probabilities(team, est_best_rating)
+            team.ratings[RATINGS_P_BEST] = p_worse + 0.5 * p_equal
+            team.ratings[RATINGS_P_BEST_WORSE] = p_worse
+            if (idx + 1) % 25 == 0:
+                print("%s of P(r) calculations done." % str(idx + 1))
+        return True
+
+    def ranked_teams(self):
+        return sorted(self.team_list, key=lambda team: team.composite_rating(), reverse=True)
+
+    def write_to_csv(self):
+        with open(self.output_csv, 'w+') as f:
+            for idx, team in enumerate(self.ranked_teams()):
+                columns = self.formatted_ratings(team)
+                columns.insert(0, team.name)
+                columns.insert(0, idx + 1)
+                f.write(','.join([str(item) for item in columns]) + "\n")
+
+    def write_to_md(self):
+        with open(self.output_md, 'w+') as f:
+            column_names = [
+                'Rnk', 'Team', 'W-L', 'Conf', 'Rating', 'Rating-PP',
+                'Rating-PP-Adj', 'Rating-SOR-WA', 'Rating-SOR-MLE',
+                'P-Val Best', 'P-Val Best Worse'
+            ]
+
+            if self.sport == SPORT_FOOTBALL:
+                column_names.insert(4, 'Lvl')
+                
+            f.write(build_markdown_row(column_names))
+            f.write(build_markdown_barrier(column_names))
+
+            for idx, team in enumerate(self.ranked_teams()):
+
+                if self.sport == SPORT_FOOTBALL:
+                    conference_flair = team.conference.fb_flair
+                elif self.sport == SPORT_BASKETBALL:
+                    conference_flair = team.conference.bb_flair
+                else:
+                    raise "Unexpected/undefined sport %s" % sport
+
+                static_columns = [
+                    idx + 1, team.get_flair_with_name(),
+                    team.get_record(), conference_flair]
+
+                if self.sport == SPORT_FOOTBALL:
+                    if team.fb_level == 'FBS':
+                        level_flair = FBS_FLAIR
+                    elif team.fb_level == 'FCS':
+                        level_flair = FCS_FLAIR
+                    else:
+                        raise "Unexpected level %s" % team.fb_level
+                    static_columns.append(level_flair)
+
+                rating_columns = self.formatted_ratings(team)
+
+                columns = static_columns + rating_columns
+                f.write(build_markdown_row(columns))
+
+
+    def formatted_ratings(self, team):
+        p_best_for_print = team.ratings[RATINGS_P_BEST] * 100
+        p_best_worse_for_print = team.ratings[RATINGS_P_BEST_WORSE] * 100
+        columns = [
+            team.composite_rating(), team.ratings[RATINGS_PURE_POINTS],
+            team.ratings[RATINGS_PURE_POINTS_ADJUSTED], team.ratings[RATINGS_SOR_WA],
+            team.ratings[RATINGS_SOR_MLE], p_best_for_print, p_best_worse_for_print]
+        columns = [str(round(item, 2)) for item in columns]
+        return columns
+
     def calculate_sor_metrics(self):
         self.generate_rating_probabilities()
 
         for idx, team in enumerate(self.team_list):
             team.calculate_and_add_sor_metrics(self.rating_probabilities, self.home_field_advantage, self.overall_sd)
-            if (idx + 1) % 10 == 0:
-                print("%s of %s complete" % (idx + 1, len(self.team_list)))
+            if (idx + 1) % 25 == 0:
+                print("%s of %s SOR complete" % (idx + 1, len(self.team_list)))
 
-        est_best_rating = self.estimate_best_rating()
+        self.calculate_p_record_metrics()
 
-        for team in self.team_list:
-            p_better, p_equal, p_worse = self.calculate_performance_probabilities(team, est_best_rating)
-            team.ratings[RATINGS_P_BEST] = p_worse + 0.5 * p_equal
-            team.ratings[RATINGS_P_BEST_WORSE] = p_worse
+        self.write_to_csv()
+        self.write_to_md()
 
-        ranked_teams = sorted(self.team_list, key=lambda team: team.composite_rating(), reverse=True)
-        for idx, team in enumerate(ranked_teams):
-            p_best_for_print = team.ratings[RATINGS_P_BEST] * 100
-            p_best_worse_for_print = team.ratings[RATINGS_P_BEST_WORSE] * 100
-            columns = [
-                team.composite_rating(), team.ratings[RATINGS_PURE_POINTS],
-                team.ratings[RATINGS_PURE_POINTS_ADJUSTED], team.ratings[RATINGS_SOR_WA],
-                team.ratings[RATINGS_SOR_MLE], p_best_for_print, p_best_worse_for_print]
-            columns = [str(round(item, 2)) for item in columns]
-            columns.insert(0, team.name)
-            columns.insert(0, str(idx + 1))
-            print(" ".join(columns))
+        # for idx, team in enumerate(ranked_teams):
+        #
+        #
+        #     print(" ".join(columns))
