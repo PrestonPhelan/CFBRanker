@@ -15,10 +15,10 @@ def location_coefficient(string):
     }
     return coefficients[string]
 
-def location_adjustment(string, HOME_FIELD_ADVANTAGE):
-    return location_coefficient(string) * HOME_FIELD_ADVANTAGE
+def location_adjustment(string, home_field_advantage):
+    return location_coefficient(string) * home_field_advantage
 
-def predict_diff(team, game, HOME_FIELD_ADVANTAGE):
+def predict_diff(team, game, home_field_advantage):
     own_rating = team.ratings[RATINGS_PURE_POINTS]
     opp_rating = game.opponent.ratings[RATINGS_PURE_POINTS]
-    return own_rating - opp_rating + location_adjustment(game.location, HOME_FIELD_ADVANTAGE)
+    return own_rating - opp_rating + location_adjustment(game.location, home_field_advantage)

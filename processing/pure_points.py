@@ -40,7 +40,7 @@ def create_linear_equation_ids(teams):
         team.lin_eq_id = idx
     return True
 
-def build_overall_linear_equations(indexed_teams, HOME_FIELD_ADVANTAGE):
+def build_overall_linear_equations(indexed_teams, home_field_advantage):
     lin_coeffs = []
     lin_results = []
     lin_eq_size = len(indexed_teams) - 1
@@ -52,7 +52,7 @@ def build_overall_linear_equations(indexed_teams, HOME_FIELD_ADVANTAGE):
         total_differential = 0
         location_adv = 0
         for game in team.games:
-            location_adv += location_adjustment(game.location, HOME_FIELD_ADVANTAGE)
+            location_adv += location_adjustment(game.location, home_field_advantage)
             # Assign counts to teams based on location
             if is_not_constant_team(team, indexed_teams):
                 coefficients[team.lin_eq_id] += 1
@@ -70,7 +70,7 @@ def build_overall_linear_equations(indexed_teams, HOME_FIELD_ADVANTAGE):
         lin_results.append(total_differential - location_adv)
     return lin_coeffs, lin_results
 
-def build_unit_linear_equations(indexed_teams, HOME_FIELD_ADVANTAGE):
+def build_unit_linear_equations(indexed_teams, home_field_advantage):
     lin_coeffs = []
     lin_results = []
     lin_eq_size = len(indexed_teams) * 2 - 1
@@ -101,7 +101,7 @@ def build_unit_linear_equations(indexed_teams, HOME_FIELD_ADVANTAGE):
                 opponent_off_id = get_off_id(game.opponent)
                 def_coefficients[opponent_off_id] += 1
 
-            location_adv += location_adjustment(game.location, HOME_FIELD_ADVANTAGE) / 2.0
+            location_adv += location_adjustment(game.location, home_field_advantage) / 2.0
 
             total_points += game.own_score
             total_points_allowed += game.opp_score
@@ -117,12 +117,12 @@ def build_unit_linear_equations(indexed_teams, HOME_FIELD_ADVANTAGE):
 
     return lin_coeffs, lin_results
 
-def calculate_overall_coefficients(teams, HOME_FIELD_ADVANTAGE):
-    lin_coeffs, lin_results = build_overall_linear_equations(teams, HOME_FIELD_ADVANTAGE)
+def calculate_overall_coefficients(teams, home_field_advantage):
+    lin_coeffs, lin_results = build_overall_linear_equations(teams, home_field_advantage)
     return linear_equation_solve(lin_coeffs, lin_results)
 
-def calculate_unit_coefficients(teams, HOME_FIELD_ADVANTAGE):
-    lin_coeffs, lin_results = build_unit_linear_equations(teams, HOME_FIELD_ADVANTAGE)
+def calculate_unit_coefficients(teams, home_field_advantage):
+    lin_coeffs, lin_results = build_unit_linear_equations(teams, home_field_advantage)
     return linear_equation_solve(lin_coeffs, lin_results)
 
 def calculate_unit_averages(unit_coefficients, num_teams):
@@ -137,11 +137,11 @@ def calculate_unit_averages(unit_coefficients, num_teams):
     average_defense = total_def / float(num_teams)
     return average_offense, average_defense
 
-def calculate_standard_deviations(teams, HOME_FIELD_ADVANTAGE):
+def calculate_standard_deviations(teams, home_field_advantage):
     total_sse = 0
     total_games = 0
     for team in list(teams.values()):
-        residuals = get_residuals(team, HOME_FIELD_ADVANTAGE)
+        residuals = get_residuals(team, home_field_advantage)
 
         sum_squared_error = sum([residual * residual for residual in residuals])
         games_played = len(residuals)
@@ -184,10 +184,10 @@ def linear_equation_solve(lin_coeffs, lin_results):
         print(len(b))
     return numpy.linalg.solve(a, b)
 
-def get_residuals(team, HOME_FIELD_ADVANTAGE):
+def get_residuals(team, home_field_advantage):
     residuals = []
     for game in team.games:
-        predicted_diff = predict_diff(team, game, HOME_FIELD_ADVANTAGE)
+        predicted_diff = predict_diff(team, game, home_field_advantage)
         actual_diff = game.own_score - game.opp_score
         if game.overtime and OVERTIME_ADJUSTMENT:
             # +/- 0.5 depending on if its a win or loss in OT
@@ -202,7 +202,7 @@ def write_to_csv(sorted_teams, PURE_POINTS_OUTPUT_CSV):
             columns = [idx + 1, team.name, overall, offense, defense, std]
             f.write(','.join([str(item) for item in columns]) + "\n")
 
-def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT, SPORT):
+def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient, sport):
     with open(PURE_POINTS_OUTPUT_MD, 'w+') as f:
         column_names = [
             'Rnk', 'Team', 'Record', 'Conf', 'Raw Rating',
@@ -210,7 +210,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT
             'Consistency'
         ]
 
-        if SPORT == SPORT_FOOTBALL:
+        if sport == SPORT_FOOTBALL:
             column_names.insert(4, 'Lvl')
 
         f.write(build_markdown_row(column_names))
@@ -220,18 +220,18 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT
         for idx, team in enumerate(sorted_teams):
             overall, offense, defense, std = get_formatted_ratings_from_team(team)
 
-            overall_adjusted = overall + (average_std - team.ratings[RATINGS_STD]) * ADJUSTED_RATING_COEFFICIENT
+            overall_adjusted = overall + (average_std - team.ratings[RATINGS_STD]) * adjusted_rating_coefficient
             overall_adjusted = round(overall_adjusted, 2)
 
             name_with_flair = " ".join([team.flair, team.name])
             record_string = "(%s-%s)" % (team.wins, team.losses)
 
-            if SPORT == SPORT_FOOTBALL:
+            if sport == SPORT_FOOTBALL:
                 conference_flair = team.conference.fb_flair
-            elif SPORT == SPORT_BASKETBALL:
+            elif sport == SPORT_BASKETBALL:
                 conference_flair = team.conference.bb_flair
             else:
-                raise "Unexpected/undefined sport %s" % SPORT
+                raise "Unexpected/undefined sport %s" % sport
 
 
             columns = [
@@ -239,7 +239,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT
                 overall, overall_adjusted, offense, defense, std
             ]
 
-            if SPORT == SPORT_FOOTBALL:
+            if sport == SPORT_FOOTBALL:
                 if team.fb_level == 'FBS':
                     level_flair = FBS_FLAIR
                 elif team.fb_level == 'FCS':
@@ -250,32 +250,34 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT
 
             f.write(build_markdown_row(columns))
 
-def calculate_pure_points_ratings_and_standard_deviation(teams, SPORT):
-    if SPORT == SPORT_FOOTBALL:
-        HOME_FIELD_ADVANTAGE = FB_HOME_FIELD_ADVANTAGE
-        CURRENT_WEEK = FB_CURRENT_WEEK
-        ADJUSTED_RATING_COEFFICIENT = FB_ADJUSTED_RATING_COEFFICIENT
-    elif SPORT == SPORT_BASKETBALL:
-        HOME_FIELD_ADVANTAGE = BB_HOME_COURT_ADVANTAGE
-        CURRENT_WEEK = BB_CURRENT_WEEK
-        ADJUSTED_RATING_COEFFICIENT = BB_ADJUSTED_RATING_COEFFICIENT
+def calculate_pure_points_ratings_and_standard_deviation(teams, sport):
+    if sport == SPORT_FOOTBALL:
+        options = FB_OPTIONS
+    elif sport == SPORT_BASKETBALL:
+        options = BB_OPTIONS
+    else:
+        raise "Unexpected sport %s" % sport
 
-    PURE_POINTS_ROOT =  '%s/output/%s/pure-points-week%s' % (ROOT_PATH, SPORT, CURRENT_WEEK)
-    PURE_POINTS_OUTPUT_CSV = PURE_POINTS_ROOT + '.csv'
-    PURE_POINTS_OUTPUT_MD = PURE_POINTS_ROOT + '.md'
+    home_field_advantage = options[OPTIONS_HOME_FIELD_ADVANTAGE]
+    current_week = options[OPTIONS_CURRENT_WEEK]
+    adjusted_rating_coefficient = options[OPTIONS_ADJUSTED_RATING_COEFFICIENT]
+
+    pure_points_root =  '%s/output/%s/pure-points-week%s' % (ROOT_PATH, sport, current_week)
+    pure_points_output_csv = pure_points_root + '.csv'
+    pure_points_output_md = pure_points_root + '.md'
 
     create_linear_equation_ids(teams)
 
-    overall_coefficients = calculate_overall_coefficients(teams, HOME_FIELD_ADVANTAGE)
-    unit_coefficients = calculate_unit_coefficients(teams, HOME_FIELD_ADVANTAGE)
+    overall_coefficients = calculate_overall_coefficients(teams, home_field_advantage)
+    unit_coefficients = calculate_unit_coefficients(teams, home_field_advantage)
 
     add_ratings_to_teams(teams, overall_coefficients, unit_coefficients)
 
-    overall_std = calculate_standard_deviations(teams, HOME_FIELD_ADVANTAGE)
+    overall_std = calculate_standard_deviations(teams, home_field_advantage)
 
     sorted_teams = sorted(teams.values(), key=lambda team: team.ratings[RATINGS_PURE_POINTS], reverse=True)
 
-    write_to_csv(sorted_teams, PURE_POINTS_OUTPUT_CSV)
-    write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT, SPORT)
+    write_to_csv(sorted_teams, pure_points_output_csv)
+    write_to_md(sorted_teams, pure_points_output_md, adjusted_rating_coefficient, sport)
 
     return overall_std

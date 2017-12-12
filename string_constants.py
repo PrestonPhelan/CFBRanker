@@ -18,5 +18,9 @@ RATINGS_OFFENSE = 'pp_offense'
 RATINGS_DEFENSE = 'pp_defense'
 RATINGS_STD = 'pure_points_std'
 
+OPTIONS_CURRENT_WEEK = 'current_week'
+OPTIONS_HOME_FIELD_ADVANTAGE = 'home_field_advantage'
+OPTIONS_ADJUSTED_RATING_COEFFICIENT = 'adjusted_rating_coefficient'
+
 FBS_FLAIR = '[College Football Playoff](#l/cfp)'
 FCS_FLAIR = '[FCS](#l/fcs)'
