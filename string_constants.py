@@ -17,3 +17,6 @@ RATINGS_PURE_POINTS = 'pure_points'
 RATINGS_OFFENSE = 'pp_offense'
 RATINGS_DEFENSE = 'pp_defense'
 RATINGS_STD = 'pure_points_std'
+
+FBS_FLAIR = '[College Football Playoff](#l/cfp)'
+FCS_FLAIR = '[FCS](#l/fcs)'

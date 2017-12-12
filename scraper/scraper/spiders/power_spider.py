@@ -4,7 +4,7 @@ import os, sys
 local_path = os.path.dirname(__file__)
 root_path = '/'.join(local_path.split('/')[:-3])
 sys.path.append(root_path)
-from settings import CURRENT_WEEK
+from settings import FB_CURRENT_WEEK
 
 class PowerSpider(scrapy.Spider):
     name = "power_ratings"

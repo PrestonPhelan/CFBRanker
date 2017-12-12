@@ -205,10 +205,13 @@ def write_to_csv(sorted_teams, PURE_POINTS_OUTPUT_CSV):
 def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT, SPORT):
     with open(PURE_POINTS_OUTPUT_MD, 'w+') as f:
         column_names = [
-            'Rnk', 'Team', 'Record', 'Conference', 'Raw Rating',
+            'Rnk', 'Team', 'Record', 'Conf', 'Raw Rating',
             'Adjusted Rating', 'Offense Adj PPG', 'Defense Adj PPG',
             'Consistency'
         ]
+
+        if SPORT == SPORT_FOOTBALL:
+            column_names.insert(4, 'Lvl')
 
         f.write(build_markdown_row(column_names))
         f.write(build_markdown_barrier(column_names))
@@ -230,10 +233,20 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, ADJUSTED_RATING_COEFFICIENT
             else:
                 raise "Unexpected/undefined sport %s" % SPORT
 
+
             columns = [
                 idx + 1, name_with_flair, record_string, conference_flair,
                 overall, overall_adjusted, offense, defense, std
             ]
+
+            if SPORT == SPORT_FOOTBALL:
+                if team.fb_level == 'FBS':
+                    level_flair = FBS_FLAIR
+                elif team.fb_level == 'FCS':
+                    level_flair = FCS_FLAIR
+                else:
+                    raise "Unexpected level %s" % team.fb_level
+                columns.insert(4, level_flair)
 
             f.write(build_markdown_row(columns))
 

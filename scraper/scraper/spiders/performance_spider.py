@@ -13,7 +13,7 @@ sys.path.append(ROOT_PATH)
 import scrapy
 
 from string_constants import UNPLAYED_INDICATOR
-from settings import CURRENT_WEEK, TEAM_PATH
+from settings import TEAM_PATH
 from constants.name_translations import PERFORMANCE_NAMES, SCHEDULE_NAMES, find_match
 from processing.builders import build_filename_format
 
@@ -110,8 +110,8 @@ class MothershipSpider(scrapy.Spider):
         with open(TEAM_SOURCE) as f:
             for line in f:
                 columns = line.strip().split(",")
-                standard_name = columns[0]
-                scrape_id = columns[1]
+                standard_name = columns[1]
+                scrape_id = columns[2]
                 self.names[scrape_id] = standard_name
 
     def _yield_requests_from_file(self, base_url, fb=False):
@@ -121,7 +121,7 @@ class MothershipSpider(scrapy.Spider):
                 columns = line.strip().split(",")
                 if fb and columns[-3] == "None":
                     continue
-                scrape_id = columns[1]
+                scrape_id = columns[2]
                 url = base_url + scrape_id
                 yield scrapy.Request(url=url, callback=self.parse)
                 if WAIT_BETWEEN_CALLS:
