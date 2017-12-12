@@ -153,7 +153,7 @@ def calculate_standard_deviations(teams, home_field_advantage):
 
     # Every game is listed twice (from each team's perspective)
     total_sse = total_sse / 2.0
-    total_games = total_sse / 2.0
+    total_games = total_games / 2.0
     return calculate_sample_standard_deviation(total_sse, total_games, len(teams) - 1)
 
 def calculate_sample_standard_deviation(sum_squared_error, n, degrees_of_freedom_used):
@@ -179,6 +179,7 @@ def linear_equation_solve(lin_coeffs, lin_results):
     a = numpy.array(lin_coeffs)
     b = numpy.array(lin_results)
     if len(a[0]) != len(b):
+        print("Mismatched linear equation sizes!")
         print(len(a))
         print(len(a[0]))
         print(len(b))
@@ -258,10 +259,12 @@ def calculate_pure_points_ratings_and_standard_deviation(teams, sport):
     else:
         raise "Unexpected sport %s" % sport
 
+    # Options variables
     home_field_advantage = options[OPTIONS_HOME_FIELD_ADVANTAGE]
     current_week = options[OPTIONS_CURRENT_WEEK]
     adjusted_rating_coefficient = options[OPTIONS_ADJUSTED_RATING_COEFFICIENT]
 
+    # File paths
     pure_points_root =  '%s/output/%s/pure-points-week%s' % (ROOT_PATH, sport, current_week)
     pure_points_output_csv = pure_points_root + '.csv'
     pure_points_output_md = pure_points_root + '.md'
