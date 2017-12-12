@@ -7,6 +7,7 @@ sys.path.append(ROOT_PATH)
 
 from models.helpers.read_schedule import read_schedule
 from processing.builders import build_filename_format
+from processing.game_helpers import location_adjustment
 from settings import SCHEDULE_GENERIC_PATH
 from string_constants import *
 
@@ -39,8 +40,26 @@ class Game:
 
         return string_to_print
 
-    def difficulty(self, location_adjustment_func):
-        return self.opponent.ratings['pure_points'] - location_adjustment_func(self.location)
+    def difficulty(self, home_field_advantage):
+        return self.get_opponent_rating() - location_adjustment(self.location, home_field_advantage)
+
+    def game_score(self, home_field_advantage):
+        return self.difficulty(home_field_advantage) + self.own_score - self.opp_score
+
+    def get_opponent_rating(self):
+        return self.opponent.ratings[RATINGS_PURE_POINTS]
+
+    def get_overtime_string(self):
+        if not self.overtime:
+            return ""
+        elif self.num_overtimes == 1:
+            return " OT"
+        else:
+            return " %sOT" % self.num_overtimes
+
+    def get_score_string(self):
+        base = "%s-%s" % (self.own_score, self.opp_score)
+        return base + self.get_overtime_string()
 
     def _default_location_adjustment(self, string):
         results = {

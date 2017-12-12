@@ -8,6 +8,7 @@ sys.path.append(ROOT_PATH)
 
 from processing.builders import build_markdown_row, build_markdown_barrier
 from processing.game_helpers import *
+from processing.options_util import import_options
 from settings import *
 from string_constants import *
 
@@ -225,7 +226,6 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient
             overall_adjusted = round(overall_adjusted, 2)
 
             name_with_flair = " ".join([team.flair, team.name])
-            record_string = "(%s-%s)" % (team.wins, team.losses)
 
             if sport == SPORT_FOOTBALL:
                 conference_flair = team.conference.fb_flair
@@ -236,7 +236,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient
 
 
             columns = [
-                idx + 1, name_with_flair, record_string, conference_flair,
+                idx + 1, name_with_flair, team.get_record(), conference_flair,
                 overall, overall_adjusted, offense, defense, std
             ]
 
@@ -252,12 +252,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient
             f.write(build_markdown_row(columns))
 
 def calculate_pure_points_ratings_and_standard_deviation(teams, sport):
-    if sport == SPORT_FOOTBALL:
-        options = FB_OPTIONS
-    elif sport == SPORT_BASKETBALL:
-        options = BB_OPTIONS
-    else:
-        raise "Unexpected sport %s" % sport
+    options = import_options(sport)
 
     # Options variables
     home_field_advantage = options[OPTIONS_HOME_FIELD_ADVANTAGE]

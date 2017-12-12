@@ -98,6 +98,12 @@ class Team:
 
                     self.games.append(Game(game_data))
 
+    def get_flair_with_name(self):
+        return " ".join([self.flair, self.name])
+
+    def get_record(self):
+        return "%s-%s" % (self.wins, self.losses)
+
     # def set_power_mean(self, rating):
     #     self.power_mean = rating
     #     if self.strength_of_record and self.game_control:

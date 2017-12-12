@@ -12,6 +12,7 @@ from string_constants import OPTIONS_ADJUSTED_RATING_COEFFICIENT
 CONFERENCE_PATH = "%s/constants/conferences.csv"
 TEAM_PATH = "%s/constants/teams.csv"
 SCHEDULE_GENERIC_PATH = "%s/output/%s/schedules/"
+PRETTY_SCHEDULE_GENERIC_PATH = "%s/output/%s/reddit_schedules/"
 
 OVERTIME_ADJUSTMENT = True
 
