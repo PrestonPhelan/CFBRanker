@@ -143,16 +143,14 @@ def calculate_standard_deviations(teams, home_field_advantage):
     total_games = 0
     for team in list(teams.values()):
         residuals = get_residuals(team, home_field_advantage)
+        team.ratings[RATINGS_STD] = numpy.std(residuals, ddof=1)
 
         sum_squared_error = sum([residual * residual for residual in residuals])
         games_played = len(residuals)
-
-        team.ratings[RATINGS_STD] = calculate_sample_standard_deviation(sum_squared_error, games_played, 1)
-
         total_sse += sum_squared_error
         total_games += games_played
 
-    # Every game is listed twice (from each team's perspective)
+    # Can't use numpy.std due to duplicates
     total_sse = total_sse / 2.0
     total_games = total_games / 2.0
     return calculate_sample_standard_deviation(total_sse, total_games, len(teams) - 1)
@@ -223,6 +221,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient
             overall, offense, defense, std = get_formatted_ratings_from_team(team)
 
             overall_adjusted = overall + (average_std - team.ratings[RATINGS_STD]) * adjusted_rating_coefficient
+            team.ratings[RATINGS_PURE_POINTS_ADJUSTED] = overall_adjusted
             overall_adjusted = round(overall_adjusted, 2)
 
             name_with_flair = " ".join([team.flair, team.name])

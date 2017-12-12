@@ -5,6 +5,8 @@ LOCAL_PATH = os.path.dirname(__file__)
 ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-1])
 sys.path.append(ROOT_PATH)
 
+from scipy.stats import norm
+
 from models.helpers.read_schedule import read_schedule
 from processing.builders import build_filename_format
 from processing.game_helpers import location_adjustment
@@ -39,6 +41,10 @@ class Game:
             string_to_print += "\n"
 
         return string_to_print
+
+    def calculate_win_probability(self, rating, home_field_advantage, overall_std):
+        z_score = (rating - self.difficulty(home_field_advantage)) / overall_std
+        return norm.cdf(z_score)
 
     def difficulty(self, home_field_advantage):
         return self.get_opponent_rating() - location_adjustment(self.location, home_field_advantage)

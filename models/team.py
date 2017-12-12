@@ -10,7 +10,7 @@ from models.game import Game
 from models.helpers.constructor import build_instance, build_set_from_file
 from models.helpers.read_schedule import read_schedule
 from processing.builders import build_filename_format
-from string_constants import FB_LEVEL, SPORT_FOOTBALL, GAME_RESULT
+from string_constants import *
 from settings import SCHEDULE_GENERIC_PATH, TEAM_PATH
 
 class Team:
@@ -98,11 +98,46 @@ class Team:
 
                     self.games.append(Game(game_data))
 
+    def calculate_and_add_sor_metrics(self, rating_probabilities, home_field_advantage, overall_std):
+        max_p_rating = 0
+        max_p = 0
+        total_p = 0
+        total_rat = 0
+        for i in range(101):
+            p_rating = rating_probabilities[i]
+            p_result = self.calculate_actual_results_probability(i, home_field_advantage, overall_std)
+            p_of_i = p_rating * p_result
+            total_p += p_of_i
+            total_rat += p_of_i * i
+            if p_of_i > max_p:
+                max_p = p_of_i
+                max_p_rating = i
+        self.ratings[RATINGS_SOR_WA] = total_rat / total_p
+        self.ratings[RATINGS_SOR_MLE] = max_p_rating
+
+    def calculate_actual_results_probability(self, rating, home_field_advantage, overall_std):
+        p = 1
+        for game in self.games:
+            p_win = game.calculate_win_probability(rating, home_field_advantage, overall_std)
+            if game.result == "W":
+                p = p * p_win
+            elif game.result == "L":
+                p = p * (1.0 - p_win)
+            else:
+                raise "Unexpected result %s" % game.result
+        return p
+
     def get_flair_with_name(self):
         return " ".join([self.flair, self.name])
 
     def get_record(self):
         return "%s-%s" % (self.wins, self.losses)
+
+    def composite_rating(self):
+        metrics = [
+            self.ratings[RATINGS_PURE_POINTS], self.ratings[RATINGS_PURE_POINTS_ADJUSTED],
+            self.ratings[RATINGS_SOR_WA], self.ratings[RATINGS_SOR_MLE]]
+        return sum(metrics) / float(len(metrics))
 
     # def set_power_mean(self, rating):
     #     self.power_mean = rating

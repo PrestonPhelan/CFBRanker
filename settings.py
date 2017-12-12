@@ -15,6 +15,7 @@ SCHEDULE_GENERIC_PATH = "%s/output/%s/schedules/"
 PRETTY_SCHEDULE_GENERIC_PATH = "%s/output/%s/reddit_schedules/"
 
 OVERTIME_ADJUSTMENT = True
+NUM_SIMS = 10000
 
 BB_OPTIONS = {
     OPTIONS_CURRENT_WEEK: 7,
