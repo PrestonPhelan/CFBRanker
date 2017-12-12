@@ -10,7 +10,7 @@ from models.game import Game
 from models.helpers.constructor import build_instance, build_set_from_file
 from models.helpers.read_schedule import read_schedule
 from processing.builders import build_filename_format
-from string_constants import FB_LEVEL, SPORT_FOOTBALL
+from string_constants import FB_LEVEL, SPORT_FOOTBALL, GAME_RESULT
 from settings import SCHEDULE_GENERIC_PATH, TEAM_PATH
 
 class Team:
@@ -75,6 +75,9 @@ class Team:
         build_instance(self, self.SOURCE_COLUMNS, data)
         self.conference = None
         self.games = []
+        self.ratings = {}
+        self.wins = 0
+        self.losses = 0
 
     def __str__(self):
         return self.name
@@ -86,6 +89,13 @@ class Team:
             for line in read_file:
                 game_data = read_schedule(line, teams_by_schedule_name)
                 if game_data:
+                    if game_data[GAME_RESULT] == "W":
+                        self.wins += 1
+                    elif game_data[GAME_RESULT] == "L":
+                        self.losses += 1
+                    else:
+                        raise "Unexpected result %s" % game_data[GAME_RESULT]
+
                     self.games.append(Game(game_data))
 
     # def set_power_mean(self, rating):

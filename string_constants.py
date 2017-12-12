@@ -12,3 +12,8 @@ GAME_OWN_SCORE = 'own_score'
 GAME_OPP_SCORE = 'opp_score'
 GAME_OVERTIME = 'overtime'
 GAME_NUM_OTS = 'num_overtimes'
+
+RATINGS_PURE_POINTS = 'pure_points'
+RATINGS_OFFENSE = 'pp_offense'
+RATINGS_DEFENSE = 'pp_defense'
+RATINGS_STD = 'pure_points_std'

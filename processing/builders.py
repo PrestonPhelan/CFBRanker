@@ -21,6 +21,12 @@ def build_result_string(team, idx):
 
 REDDIT_COLUMNS = ["Rnk", "LW", "Team", "W-L", "Conf", "Rating"]
 
+def build_markdown_row(columns):
+    return " | ".join([str(item) for item in columns]) + "\n"
+
+def build_markdown_barrier(columns):
+    return "|".join(["---" for item in columns]) + "\n"
+
 def build_reddit_header():
     return " | ".join(REDDIT_COLUMNS) + "\n"
 
