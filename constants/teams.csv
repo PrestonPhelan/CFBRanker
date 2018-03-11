@@ -55,7 +55,7 @@
 55,Colorado State,36,Colorado State Rams,Colorado State Rams,Colorado State,[Colorado State](#f/coloradostate),FBS,8,8
 56,Colorado,38,Colorado Buffaloes,Colorado Buffaloes,Colorado,[Colorado](#f/colorado),FBS,9,9
 57,Columbia,171,Columbia Lions,Columbia Lions,Columbia,[Columbia](#f/columbia),FCS,15,15
-58,Connecticut,41,Connecticut Huskies,Connecticut Huskies,Connecticut,[Connecticut](#f/connecticut),FBS,2,2
+58,Connecticut,41,UConn Huskies,UConn Huskies,UConn,[Connecticut](#f/connecticut),FBS,2,2
 59,Coppin State,2154,Coppin State Eagles,Coppin State Eagles,Coppin State,[Coppin State](#f/coppinstate),None,None,16
 60,Cornell,172,Cornell Big Red,Cornell Big Red,Cornell,[Cornell](#f/cornell),FCS,15,15
 61,Creighton,156,Creighton Bluejays,Creighton Bluejays,Creighton,[Creighton](#f/creighton),None,None,28
@@ -158,7 +158,7 @@
 158,Marshall,276,Marshall Thundering Herd,Marshall Thundering Herd,Marshall,[Marshall](#f/marshall),FBS,5,5
 159,Maryland,120,Maryland Terrapins,Maryland Terrapins,Maryland,[Maryland](#f/maryland),FBS,4,4
 160,Maryland-Eastern Shore,2379,Maryland-Eastern Shore Hawks,Maryland-Eastern Shore Hawks,Maryland-Eastern Shore,[Maryland-Eastern Shore](#f/marylandeasternshore),None,None,16
-161,Massachusetts,113,Massachusetts Minutemen,Massachusetts Minutemen,UMass,[UMass](#f/umass),FBS,6,27
+161,Massachusetts,113,Massachusetts Minutemen,Massachusetts Minutemen,Massachusetts,[UMass](#f/umass),FBS,6,27
 162,McNeese,2377,McNeese Cowboys,McNeese Cowboys,McNeese,[McNeese](#f/mcneese),FCS,23,23
 163,Memphis,235,Memphis Tigers,Memphis Tigers,Memphis,[Memphis](#f/memphis),FBS,2,2
 164,Mercer,2382,Mercer Bears,Mercer Bears,Mercer,[Mercer](#f/mercer),FCS,22,22
@@ -178,7 +178,7 @@
 178,Montana,149,Montana Grizzlies,Montana Grizzlies,Montana,[Montana](#f/montana),FCS,12,12
 179,Morehead State,2413,Morehead St Eagles,Morehead St Eagles,Morehead State,[Morehead State](#f/moreheadstate),FCS,21,19
 180,Morgan State,2415,Morgan State Bears,Morgan State Bears,Morgan State,[Morgan State](#f/morganstate),FCS,16,16
-181,Mt. St. Mary's,116,Mt. St. Mary's Mountaineers,Mt. St. Mary's Mountaineers,Mt. St. Mary's,[Mt. St. Mary's](#f/mtstmarys),None,None,18
+181,Mount St. Mary's,116,Mt. St. Mary's Mountaineers,Mt. St. Mary's Mountaineers,Mt. St. Mary's,[Mount St. Mary's](#f/mountstmarys),None,None,18
 182,Murray State,93,Murray State Racers,Murray State Racers,Murray State,[Murray State](#f/murraystate),FCS,19,19
 183,NC State,152,NC State Wolfpack,NC State Wolfpack,NC State,[NC State](#f/ncstate),FBS,1,1
 184,NJIT,2885,NJIT Highlanders,NJIT Highlanders,NJIT,[NJIT](#f/njit),None,None,26
@@ -215,7 +215,7 @@
 215,Oklahoma,201,Oklahoma Sooners,Oklahoma Sooners,Oklahoma,[Oklahoma](#f/oklahoma),FBS,3,3
 216,Old Dominion,295,Old Dominion Monarchs,Old Dominion Monarchs,Old Dominion,[Old Dominion](#f/olddominion),FBS,5,5
 217,Ole Miss,145,Ole Miss Rebels,Ole Miss Rebels,Ole Miss,[Ole Miss](#f/olemiss),FBS,10,10
-218,Omaha,2437,Omaha Mavericks,Omaha Mavericks,Omaha,[Omaha](#f/omaha),None,None,32
+218,Omaha,2437,Omaha Mavericks,Omaha Mavericks,Omaha,[Omaha](#f/nebraskaomaha),None,None,32
 219,Oral Roberts,198,Oral Roberts Golden Eagles,Oral Roberts Golden Eagles,Oral Roberts,[Oral Roberts](#f/oralroberts),None,None,32
 220,Oregon State,204,Oregon State Beavers,Oregon State Beavers,Oregon State,[Oregon State](#f/oregonstate),FBS,9,9
 221,Oregon,2483,Oregon Ducks,Oregon Ducks,Oregon,[Oregon](#f/oregon),FBS,9,9
@@ -224,7 +224,7 @@
 224,Pennsylvania,219,Pennsylvania Quakers,Pennsylvania Quakers,Pennsylvania,[Pennsylvania](#f/pennsylvania),FCS,15,15
 225,Pepperdine,2492,Pepperdine Waves,Pepperdine Waves,Pepperdine,[Pepperdine](#f/pepperdine),None,None,33
 226,Pittsburgh,221,Pittsburgh Panthers,Pittsburgh Panthers,Pittsburgh,[Pittsburgh](#f/pittsburgh),FBS,1,1
-227,Portland State,2502,Portland St Vikings,Portland St Vikings,Portland State,[Portland State](#f/portlandstate),FCS,12,12
+227,Portland State,2502,Portland St Vikings,Portland St Vikings,Portland St,[Portland State](#f/portlandstate),FCS,12,12
 228,Portland,2501,Portland Pilots,Portland Pilots,Portland,[Portland](#f/portland),None,None,33
 229,Prairie View A&M,2504,Prairie View A&M Panthers,Prairie View A&M Panthers,Prairie View A&M,[Prairie View A&M](#f/prairieviewam),FCS,24,24
 230,Presbyterian,2506,Presbyterian Blue Hose,Presbyterian Blue Hose,Presbyterian,[Presbyterian](#f/presbyterian),FCS,13,13
@@ -268,7 +268,7 @@
 268,South Florida,58,South Florida Bulls,South Florida Bulls,South Florida,[USF](#f/usf),FBS,2,2
 269,Southeast Missouri State,2546,Southeast Missouri State Redhawks,Southeast Missouri State Redhawks,Southeast Missouri State,[Southeast Missouri State](#f/southeastmissouristate),FCS,19,19
 270,Southern Illinois,79,Southern Illinois Salukis,Southern Illinois Salukis,Southern Illinois,[Southern Illinois](#f/southernillinois),FCS,17,17
-271,Southern Miss,2572,Southern Mississippi Golden Eagles,Southern Miss Golden Eagles,Southern Mississippi,[Southern Miss](#f/southernmiss),FBS,5,5
+271,Southern Miss,2572,Southern Mississippi Golden Eagles,Southern Miss Golden Eagles,Southern Miss,[Southern Miss](#f/southernmiss),FBS,5,5
 272,Southern Utah,253,Southern Utah Thunderbirds,Southern Utah Thunderbirds,Southern Utah,[Southern Utah](#f/southernutah),FCS,12,12
 273,Southern,2582,Southern Jaguars,Southern Jaguars,Southern,[Southern](#f/southern),FCS,24,24
 274,St. Bonaventure,179,St. Bonaventure Bonnies,St. Bonaventure Bonnies,St. Bonaventure,[St. Bonaventure](#f/stbonaventure),None,None,27
@@ -302,7 +302,7 @@
 302,UC Davis,302,UC Davis Aggies,UC Davis Aggies,UC Davis,[UC Davis](#f/ucdavis),FCS,12,29
 303,UC Irvine,300,UC Irvine Anteaters,UC Irvine Anteaters,UC Irvine,[UC Irvine](#f/ucirvine),None,None,29
 304,UC Riverside,27,UC Riverside Highlanders,UC Riverside Highlanders,UC Riverside,[UC Riverside](#f/ucriverside),None,None,29
-305,UC Santa Barbara,2540,UC Santa Barbara Gauchos,UC Santa Barbara Gauchos,UC Santa Barbara,[UC Santa Barbara](#f/ucsantabarbara),None,None,29
+305,UC Santa Barbara,2540,UC Santa Barbara Gauchos,UC Santa Barbara Gauchos,UC Santa Barbara,[UCSB](#f/ucsb),None,None,29
 306,UCF,2116,UCF Knights,UCF Knights,UCF,[UCF](#f/ucf),FBS,2,2
 307,UCLA,26,UCLA Bruins,UCLA Bruins,UCLA,[UCLA](#f/ucla),FBS,9,9
 308,UIC,82,UIC Flames,UIC Flames,UIC,[UIC](#f/uic),None,None,30

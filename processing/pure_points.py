@@ -250,7 +250,7 @@ def write_to_md(sorted_teams, PURE_POINTS_OUTPUT_MD, adjusted_rating_coefficient
 
             f.write(build_markdown_row(columns))
 
-def calculate_pure_points_ratings_and_standard_deviation(teams, sport):
+def calculate_pure_points_metrics(teams, sport):
     options = import_options(sport)
 
     # Options variables

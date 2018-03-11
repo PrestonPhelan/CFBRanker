@@ -5,12 +5,11 @@
 import time
 import os
 import sys
+import scrapy
 
 LOCAL_PATH = os.path.dirname(__file__)
 ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-3])
 sys.path.append(ROOT_PATH)
-
-import scrapy
 
 from string_constants import UNPLAYED_INDICATOR
 from settings import TEAM_PATH
@@ -18,8 +17,8 @@ from constants.name_translations import PERFORMANCE_NAMES, SCHEDULE_NAMES, find_
 from processing.builders import build_filename_format
 
 # Spider Settings
-WAIT_BETWEEN_CALLS = False
-SECONDS_BETWEEN_CALLS = 0.5
+WAIT_BETWEEN_CALLS = True
+SECONDS_BETWEEN_CALLS = 1
 
 # Web Base URLs
 FB_BASE_URL = 'https://www.espn.com/college-football/team/fpi/_/id/'
@@ -37,7 +36,7 @@ UNPLAYED_RESULT_STRING = ",".join([UNPLAYED_INDICATOR] * 2)
 def extract_locations(response):
     # Extract location data from either page, return as an array
     raw_locations = response.css('.game-schedule .game-status:not(.loss):not(.win)::text').extract()
-    locations = map(lambda location: location.strip(), raw_locations)
+    locations = [location.strip() for location in raw_locations]
     additional_text = map(lambda response: map(lambda item: item.strip(), response.css('li::text').extract()), response.css('li.team-name'))
     for idx, text_items in enumerate(additional_text):
         if '*' in text_items:
@@ -62,12 +61,15 @@ def extract_scores(response):
         for idx in cancelled_idx:
             results.insert(idx, scores[idx])
     if len(results) != len(scores):
-        raise "Something went wrong in accounting for cancelled games"
+        print("Game currently in progress")
     return { RESULT_KEY: results, SCORE_KEY: scores }
 
 def is_score(string):
     # Checks to see if a string is a score string
     return len(string.split('-')) > 1
+
+def get_scrape_id(response):
+    return response.url.split('/')[-1]
 
 class MothershipSpider(scrapy.Spider):
     # Used for matching name+nickname scraped from file to eligible names
@@ -80,12 +82,12 @@ class MothershipSpider(scrapy.Spider):
             yield request
 
     def parse(self, response):
-        name = self.names[response.url.split("/")[-1]]
-        write_file = self._build_ouput_file_path(name)
+        name = self.names[get_scrape_id(response)]
+        output_file = self._build_ouput_file_path(name)
         locations = extract_locations(response)
         opponents = extract_opponents(response)
         game_results = extract_scores(response)
-        with open(write_file, 'w+') as f:
+        with open(output_file, 'w+') as f:
             for idx in range(len(opponents)):
                 if idx < len(game_results[RESULT_KEY]) and is_score(game_results[SCORE_KEY][idx]):
                     result = game_results[RESULT_KEY][idx]
@@ -103,7 +105,7 @@ class MothershipSpider(scrapy.Spider):
         # param @standard_name: string, standardized name
         # Output: string, file path to csv file created from standardized name to filname convention
         filename_format_name = build_filename_format(standard_name) + '.csv'
-        return self.WRITE_DIRECTORY + filename_format_name
+        return self.OUTPUT_DIRECTORY + filename_format_name
 
     def _build_standard_name_object(self):
         # Get all needed standard names from constant file(s)
@@ -129,13 +131,13 @@ class MothershipSpider(scrapy.Spider):
 
 class FBScheduleSpider(MothershipSpider):
     name = "fb_schedules"
-    WRITE_DIRECTORY = '%s/output/football/schedules/' % ROOT_PATH
+    OUTPUT_DIRECTORY = '%s/output/football/schedules/' % ROOT_PATH
     BASE_URL = FB_BASE_URL
     FOOTBALL = True
 
 class BBScheduleSpider(MothershipSpider):
     name = "bb_schedules"
-    WRITE_DIRECTORY = '%s/output/basketball/schedules/' % ROOT_PATH
+    OUTPUT_DIRECTORY = '%s/output/basketball/schedules/' % ROOT_PATH
     BASE_URL = BB_BASE_URL
     FOOTBALL = False
 

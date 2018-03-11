@@ -12,7 +12,7 @@ sys.path.append(ROOT_PATH)
 from processing.builders import build_markdown_row, build_markdown_barrier
 from processing.game_helpers import calc_product, choose
 from processing.options_util import import_options
-from settings import NUM_SIMS, COMPOSITE_GENERIC_PATH
+from settings import NUM_SIMS, COMPOSITE_GENERIC_PATH, SOR_GENERIC_PATH, CALCULATE_P_OF_R
 from string_constants import *
 
 class SORCalculator:
@@ -28,6 +28,7 @@ class SORCalculator:
         composite_path = COMPOSITE_GENERIC_PATH % (ROOT_PATH, self.sport, self.current_week)
         self.output_csv = composite_path + ".csv"
         self.output_md = composite_path + ".md"
+        self.output_sor_md = SOR_GENERIC_PATH % (ROOT_PATH, self.sport, self.current_week)
 
         self.calculate_sor_metrics()
 
@@ -61,8 +62,14 @@ class SORCalculator:
         sum_of_probs = 0
         for current_loss_counter in range(team.losses):
             sum_of_probs += self.calculate_schedule_probability(win_probs, current_loss_counter)
+            if sum_of_probs > 0.99995:
+                sum_of_probs = 1.0
+                break
         p_better = sum_of_probs
-        p_equal = self.calculate_schedule_probability(win_probs, team.losses)
+        if p_better < 1:
+            p_equal = self.calculate_schedule_probability(win_probs, team.losses)
+        else:
+            p_equal = 0.0
         p_worse = 1 - (p_better + p_equal)
         return [p_better, p_equal, p_worse]
 
@@ -84,12 +91,17 @@ class SORCalculator:
 
     def estimate_best_rating(self):
         if self.sport == SPORT_FOOTBALL:
+            ## FOR ESTIMATING BEST (and calculating p > best)
             # Originally did 1.0 / (NUM_TEAMS * 2) to center in bucket
             # But this led to overestimate based on simulating max values
             # 1.75 gives better estimate
-            est_best_rating = norm.ppf(1 - (1.0 / (len(self.team_list) * 1.75)), self.filtered_average(), self.ratings_sd)
+            # est_best_rating = norm.ppf(1 - (1.0 / (len(self.team_list) * 1.75)), self.filtered_average(), self.ratings_sd)
+
+            ## FOR ESTIMATING SECOND BEST
+            est_best_rating = norm.ppf(1 - (1.0 / len(self.team_list)), self.filtered_average(), self.ratings_sd)
         else:
-            est_best_rating = norm.ppf(1 - (1.0 / (len(self.team_list) * 1.75)), 50, self.ratings_sd)
+            # est_best_rating = norm.ppf(1 - (1.0 / (len(self.team_list) * 1.75)), 50, self.ratings_sd)
+            est_best_rating = norm.ppf(1 - (1.0 / len(self.team_list)), 50, self.ratings_sd)
         return est_best_rating
 
     def sim_estimate_of_best_rating(self):
@@ -133,13 +145,13 @@ class SORCalculator:
         with open(self.output_md, 'w+') as f:
             column_names = [
                 'Rnk', 'Team', 'W-L', 'Conf', 'Rating', 'Rating-PP',
-                'Rating-PP-Adj', 'Rating-SOR-WA', 'Rating-SOR-MLE',
-                'P-Val Best', 'P-Val Best Worse'
-            ]
+                'Rating-PP-Adj', 'Rating-SOR-WA', 'Rating-SOR-MLE']
+            if CALCULATE_P_OF_R:
+                column_names = column_names + ['P-Val Best', 'P-Val Best Worse']
 
             if self.sport == SPORT_FOOTBALL:
                 column_names.insert(4, 'Lvl')
-                
+
             f.write(build_markdown_row(column_names))
             f.write(build_markdown_barrier(column_names))
 
@@ -170,14 +182,61 @@ class SORCalculator:
                 columns = static_columns + rating_columns
                 f.write(build_markdown_row(columns))
 
+    def write_sor_to_md(self):
+        with open(self.output_sor_md, 'w+') as f:
+            column_names = [
+                'Rnk', 'Team', 'W-L', 'Conf', 'Rating',
+                'Rating-SOR-WA', 'Rating-SOR-MLE'
+            ]
+
+            if self.sport == SPORT_FOOTBALL:
+                column_names.insert(4, 'Lvl')
+
+            f.write(build_markdown_row(column_names))
+            f.write(build_markdown_barrier(column_names))
+
+            teasm_ranked_by_sor = sorted(self.team_list, key=lambda team: team.ratings[RATINGS_SOR_WA] + team.ratings[RATINGS_SOR_MLE], reverse=True)
+
+            for idx, team in enumerate(teasm_ranked_by_sor):
+
+                if self.sport == SPORT_FOOTBALL:
+                    conference_flair = team.conference.fb_flair
+                elif self.sport == SPORT_BASKETBALL:
+                    conference_flair = team.conference.bb_flair
+                else:
+                    raise "Unexpected/undefined sport %s" % sport
+
+                static_columns = [
+                    idx + 1, team.get_flair_with_name(),
+                    team.get_record(), conference_flair]
+
+                if self.sport == SPORT_FOOTBALL:
+                    if team.fb_level == 'FBS':
+                        level_flair = FBS_FLAIR
+                    elif team.fb_level == 'FCS':
+                        level_flair = FCS_FLAIR
+                    else:
+                        raise "Unexpected level %s" % team.fb_level
+                    static_columns.append(level_flair)
+
+                average_rating = (team.ratings[RATINGS_SOR_WA] + team.ratings[RATINGS_SOR_MLE]) / 2.0
+                rating_columns = [average_rating, round(team.ratings[RATINGS_SOR_WA], 2), round(team.ratings[RATINGS_SOR_MLE], 2)]
+
+                columns = static_columns + rating_columns
+                f.write(build_markdown_row(columns))
+
 
     def formatted_ratings(self, team):
-        p_best_for_print = team.ratings[RATINGS_P_BEST] * 100
-        p_best_worse_for_print = team.ratings[RATINGS_P_BEST_WORSE] * 100
         columns = [
             team.composite_rating(), team.ratings[RATINGS_PURE_POINTS],
             team.ratings[RATINGS_PURE_POINTS_ADJUSTED], team.ratings[RATINGS_SOR_WA],
-            team.ratings[RATINGS_SOR_MLE], p_best_for_print, p_best_worse_for_print]
+            team.ratings[RATINGS_SOR_MLE]
+        ]
+
+        if CALCULATE_P_OF_R:
+            p_best_for_print = team.ratings[RATINGS_P_BEST] * 100
+            p_best_worse_for_print = team.ratings[RATINGS_P_BEST_WORSE] * 100
+            columns = columns + [p_best_for_print, p_best_worse_for_print]
         columns = [str(round(item, 2)) for item in columns]
         return columns
 
@@ -189,7 +248,9 @@ class SORCalculator:
             if (idx + 1) % 25 == 0:
                 print("%s of %s SOR complete" % (idx + 1, len(self.team_list)))
 
-        self.calculate_p_record_metrics()
+        self.write_sor_to_md()
+        if CALCULATE_P_OF_R:
+            self.calculate_p_record_metrics()
 
         self.write_to_csv()
         self.write_to_md()
