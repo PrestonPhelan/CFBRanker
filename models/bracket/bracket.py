@@ -5,6 +5,9 @@ LOCAL_PATH = os.path.dirname(__file__)
 ROOT_PATH = '/'.join(LOCAL_PATH.split('/')[:-2])
 sys.path.append(ROOT_PATH)
 
+import numpy
+from scipy.stats import norm
+
 from bracket_team import BracketTeam
 
 class Bracket:
@@ -30,7 +33,7 @@ class Bracket:
         self.__create_teams()
 
     def calculate(self):
-        # self.__calculate_first_round()
+        self.__calculate_first_round()
         # For each round
             # Calculate probability of each matchup
             # Calculate win probailities of each matchup
@@ -43,10 +46,19 @@ class Bracket:
                 team_list[0].probabilities[0] = 1
             else:
                 team1, team2 = team_list
-                self.__calculate_matchup(team1, team2, 0)
+                win_probabilities = self.__calculate_matchup(team1, team2)
+                for key, val in win_probabilities.items():
+                    key.probabilities[0] = val
+                    probability = round(val * 100, 2)
+                    p_string = ": %s" % probability
+                    print(key.name +  p_string)
 
-    def __calculate_matchup(self, team1, team2, round):
-        pass
+    def __calculate_matchup(self, team1, team2):
+        game_std_dev = numpy.mean([team1.std_dev, team2.std_dev])
+        z_score = (team1.rating - team2.rating) / game_std_dev
+        team1_win = norm.cdf(z_score)
+        team2_win = 1 - team1_win
+        return {team1: team1_win, team2: team2_win}
 
     def __create_teams(self):
         for team_name, attributes in self.field.items():
