@@ -5,7 +5,7 @@ class BracketTeam:
         self.name = attributes['name']
         self.rating = attributes['rating']
         self.std_dev = attributes['std_dev']
-        self.probabilities = [None for i in range(7)]
+        self.probabilities = [0 for i in range(7)]
 
     def __str__(self):
         return "%s -- Rating: %s, Std_Dev: %s" % (
