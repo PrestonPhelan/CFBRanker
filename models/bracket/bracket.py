@@ -49,9 +49,6 @@ class Bracket:
                 win_probabilities = self.__calculate_matchup(team1, team2)
                 for key, val in win_probabilities.items():
                     key.probabilities[0] = val
-                    probability = round(val * 100, 2)
-                    p_string = ": %s" % probability
-                    print(key.name +  p_string)
 
     def __calculate_matchup(self, team1, team2):
         game_std_dev = numpy.mean([team1.std_dev, team2.std_dev])
