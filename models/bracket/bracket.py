@@ -31,6 +31,8 @@ class Bracket:
         15: 15
     }
 
+    USE_FTE = True
+
     def __init__(self):
         # Initialize instance variables
         self.teams = [[] for i in range(64)]
@@ -39,17 +41,27 @@ class Bracket:
         self.pure_points_source = (
             "%s/output/basketball/pure-points-week17.csv" % ROOT_PATH
         )
-        self.composite_source = (
-            "%s/output/basketball/composite-week17.csv" % ROOT_PATH
-        )
+        if self.USE_FTE:
+            self.composite_source = (
+                "%s/constants/fivethirtyeight2018.csv" % ROOT_PATH
+            )
+            self.adjustment_source = None
+        else:
+            self.composite_source = (
+                "%s/output/basketball/composite-week17.csv" % ROOT_PATH
+            )
+            self.adjustment_source = (
+                "%s/constants/adjustments2018.csv" % ROOT_PATH
+            )
         self.output_file = (
-            "%s/output/basketball/bracket_projections.csv" % ROOT_PATH
+            "%s/output/basketball/fte_bracket_projections.csv" % ROOT_PATH
         )
 
         # Read teams with bracket locations
         self.__read_bracket()
         # Read team ratings
         self.__read_ratings()
+        self.__make_adjustments()
 
         # Build teams with location data
         self.__create_teams()
@@ -61,6 +73,56 @@ class Bracket:
             self.__calculate_round(i)
         self.__write_results()
 
+    def simulate(self):
+        results = self.__simulate_first_round()
+        curr_results = results
+        for i in range(5):
+            curr_results = self.__simulate_late_round(curr_results)
+            results += curr_results
+        return results
+
+    def __extract_team_from_initial_list(self, team_list):
+        if len(team_list) > 1:
+            return self.__simulate_matchup(team_list)
+        else:
+            return team_list[0]
+
+    def __simulate_first_round(self):
+        results = []
+        for i in range(32):
+            team1_list = self.teams[2 * i]
+            team1 = self.__extract_team_from_initial_list(team1_list)
+
+            team2_list = self.teams[2 * i + 1]
+            team2 = self.__extract_team_from_initial_list(team2_list)
+
+            results.append(self.__simulate_matchup([team1, team2]))
+        return results
+
+    def __simulate_late_round(self, team_list):
+        results = []
+        for i in range(len(team_list) // 2):
+            team1 = team_list[2 * i]
+            team2 = team_list[2 * i + 1]
+            results.append(self.__simulate_matchup([team1, team2]))
+        return results
+
+    def __simulate_matchup(self, teams):
+        win_probs = self.__calculate_matchup(teams[0], teams[1])
+        x = numpy.random.random()
+        if x <= win_probs[teams[0]]:
+            return teams[0]
+        else:
+            return teams[1]
+
+    def __make_adjustments(self):
+        if self.adjustment_source:
+            with open(self.adjustment_source, 'r') as f:
+                for line in f:
+                    team, val_str = line.split(',')
+                    self.field[team]['rating'] -= float(val_str)
+        else:
+            pass
 
     def __calculate_all_matchups(self, start, round_num):
         bucket_size = 2 ** (round_num - 1)
@@ -161,7 +223,10 @@ class Bracket:
 
     def __read_ratings(self):
         self.__read_csv(self.pure_points_source, 'std_dev', -1)
-        self.__read_csv(self.composite_source, 'rating', 2)
+        if self.USE_FTE:
+            self.__read_csv(self.composite_source, 'rating', 2)
+        else:
+            self.__read_csv(self.composite_source, 'rating', 2)
 
     def __write_results(self):
         with open(self.output_file, 'w+') as f:

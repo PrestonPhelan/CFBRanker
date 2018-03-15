@@ -15,8 +15,7 @@
 15,0,Cincinnati
 16,0,Georgia State
 17,0,Xavier
-18,1,North Carolina Central
-18,2,Texas Southern
+18,0,Texas Southern
 19,0,Missouri
 20,0,Florida State
 21,0,Ohio State
@@ -32,8 +31,7 @@
 31,0,North Carolina
 32,0,Lipscomb
 33,0,Villanova
-34,1,LIU Brooklyn
-34,2,Radford
+34,0,Radford
 35,0,Virginia Tech
 36,0,Alabama
 37,0,West Virginia
@@ -41,8 +39,7 @@
 39,0,Wichita State
 40,0,Marshall
 41,0,Florida
-42,1,St. Bonaventure
-42,2,UCLA
+42,0,St. Bonaventure
 43,0,Texas Tech
 44,0,Stephen F. Austin
 45,0,Arkansas
@@ -58,8 +55,7 @@
 55,0,Auburn
 56,0,Charleston
 57,0,TCU
-58,1,Arizona State
-58,2,Syracuse
+58,0,Syracuse
 59,0,Michigan State
 60,0,Bucknell
 61,0,Rhode Island
